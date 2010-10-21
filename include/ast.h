@@ -91,4 +91,6 @@ char *LixpKeyword_inspect(VALUE value);
 char *LixpCons_inspect(VALUE value);
 char *LixpBuiltin_inspect(VALUE value);
 
+char *LixpValue_inspect(VALUE value);
+
 #endif

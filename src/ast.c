@@ -19,6 +19,7 @@
 #include "ast.h"
 
 #include <stdlib.h>
+#include <stdio.h>
 
 VALUE LixpNumber_new(int value)
 {
@@ -77,3 +78,95 @@ VALUE LixpBuiltin_new(enum LixpBuiltins value)
     return new;
 }
 
+/* I'm sorry for using a GNU extension, but I'm lazy */
+
+char *LixpNumber_inspect(VALUE value)
+{
+    char *str;
+    asprintf(&str, "%d", LixpNumber_value(value));
+    return str;
+}
+
+char *LixpCharacter_inspect(VALUE value)
+{
+    char *str;
+    /* TODO: Special cases (space, etc) */
+    asprintf(&str, "\\%c", LixpCharacter_value(value));
+    return str;
+}
+
+char *LixpString_inspect(VALUE value)
+{
+    char *str;
+    /* TODO: Escapes (\\, \n, etc) */
+    asprintf(&str, "\"%s\"", LixpString_value(value));
+    return str;
+}
+
+char *LixpSymbol_inspect(VALUE value)
+{
+    char *str;
+    /* TODO: Check for spaces if we are allowing |foo bar| type symbols */
+    asprintf(&str, "%s", LixpSymbol_value(value));
+    return str;
+}
+
+char *LixpKeyword_inspect(VALUE value)
+{
+    char *str;
+    asprintf(&str, ":%s", LixpKeyword_value(value));
+    return str;
+}
+
+char *LixpCons_inspect(VALUE value)
+{
+    /* Improper list */
+    if (LixpCons_cdr(value)->type != LixpType_cons)
+    {
+        char *car, *cdr;
+        car = LixpValue_inspect(LixpCons_car(value));
+        cdr = LixpValue_inspect(LixpCons_cdr(value));
+        char *str;
+        asprintf(&str, "(%s . %s)", car, cdr);
+        free(car);
+        free(cdr);
+        return str;
+    }
+    /* Proper List */
+    else
+    {
+        /* TODO: Implement inspect for proper list */
+        return NULL;
+    }
+}
+
+char *LixpBuiltin_inspect(VALUE value)
+{
+    /* TODO: Change this maybe? */
+    char *str;
+    asprintf(&str, "<LixpBuiltin:%d@%#08x>", LixpBuiltin_value(value), (unsigned int)value);
+    return str;
+}
+
+char *LixpValue_inspect(VALUE value)
+{
+    switch (value->type)
+    {
+    case LixpType_number:
+        return LixpNumber_inspect(value);
+    case LixpType_character:
+        return LixpCharacter_inspect(value);
+    case LixpType_string:
+        return LixpString_inspect(value);
+    case LixpType_symbol:
+        return LixpSymbol_inspect(value);
+    case LixpType_keyword:
+        return LixpKeyword_inspect(value);
+    case LixpType_cons:
+        return LixpCons_inspect(value);
+    case LixpType_builtin:
+        return LixpBuiltin_inspect(value);
+    default:
+        return NULL;
+    }
+}
