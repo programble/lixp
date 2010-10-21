@@ -68,6 +68,7 @@ VALUE LixpCons_new(VALUE car, VALUE cdr)
     LixpCons_cdr(new) = cdr;
     return new;
 }
+
 VALUE LixpBuiltin_new(enum LixpBuiltins value)
 {
     VALUE new = malloc(sizeof(VALUE));
