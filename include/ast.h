@@ -74,4 +74,13 @@ VALUE LixpKeyword_new(char *value);
 VALUE LixpCons_new(VALUE car, VALUE cdr);
 VALUE LixpBuiltin_new(enum LixpBuiltins value);
 
+#define LixpNumber_value(x) x->value1.int_value
+#define LixpCharacter_value(x) x->value1.char_value
+#define LixpString_value(x) x->value1.str_value
+#define LixpSymbol_value(x) x->value1.str_value
+#define LixpKeyword_value(x) x->value1.str_value
+#define LixpCons_car(x) x->value1.lixpvalue_value
+#define LixpCons_cdr(x) x->value2.lixpvalue_value
+#define LixpBuiltin_value(x) x->value1.builtin_value
+
 #endif
