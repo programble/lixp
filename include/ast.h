@@ -64,4 +64,14 @@ typedef struct LixpValue
     union LixpValueValue value2;
 } LixpValue;
 
+#define VALUE LixpValue*
+
+VALUE LixpNumber_new(int value);
+VALUE LixpCharacter_new(char value);
+VALUE LixpString_new(char *value);
+VALUE LixpSymbol_new(char *value);
+VALUE LixpKeyword_new(char *value);
+VALUE LixpCons_new(VALUE car, VALUE cdr);
+VALUE LixpBuiltin_new(enum LixpBuiltins value);
+
 #endif
