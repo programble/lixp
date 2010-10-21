@@ -83,4 +83,12 @@ VALUE LixpBuiltin_new(enum LixpBuiltins value);
 #define LixpCons_cdr(x) x->value2.lixpvalue_value
 #define LixpBuiltin_value(x) x->value1.builtin_value
 
+char *LixpNumber_inspect(VALUE value);
+char *LixpCharacter_inspect(VALUE value);
+char *LixpString_inspect(VALUE value);
+char *LixpSymbol_inspect(VALUE value);
+char *LixpKeyword_inspect(VALUE value);
+char *LixpCons_inspect(VALUE value);
+char *LixpBuiltin_inspect(VALUE value);
+
 #endif
