@@ -24,7 +24,7 @@
 int main(int argc, char **argv)
 {
 #ifdef DEBUG    
-    VALUE foo = LixpCons_new(LixpBuiltin_new(LixpBuiltin_cdr), LixpKeyword_new("foobar"));
+    VALUE foo = LixpCons_new(LixpKeyword_new("foo"), LixpCons_new(LixpKeyword_new("bar"), LixpCons_new(LixpKeyword_new("baz"), LixpCons_new(NULL, NULL))));
     char *str = LixpValue_inspect(foo);
     printf("%s\n", str);
     free(str);

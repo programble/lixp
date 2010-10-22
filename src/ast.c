@@ -156,6 +156,27 @@ char *LixpKeyword_inspect(VALUE value)
     return str;
 }
 
+char *LixpCons_inspect_(VALUE value)
+{
+    char *car, *str;
+    /* End of list */
+    if (LixpCons_car(LixpCons_cdr(value)) == NULL && LixpCons_cdr(LixpCons_cdr(value)) == NULL)
+    {
+        car = LixpValue_inspect(LixpCons_car(value));
+        asprintf(&str, "%s)", car);
+        free(car);
+    }
+    else
+    {
+        car = LixpValue_inspect(LixpCons_car(value));
+        char *cdr = LixpCons_inspect_(LixpCons_cdr(value));
+        asprintf(&str, "%s %s", car, cdr);
+        free(car);
+        free(cdr);
+    }
+    return str;
+}
+
 char *LixpCons_inspect(VALUE value)
 {
     /* Improper list */
@@ -173,8 +194,11 @@ char *LixpCons_inspect(VALUE value)
     /* Proper List */
     else
     {
-        /* TODO: Implement inspect for proper list */
-        return NULL;
+        char *inspect_ = LixpCons_inspect_(value);
+        char *str;
+        asprintf(&str, "(%s", inspect_);
+        free(inspect_);
+        return str;
     }
 }
 
