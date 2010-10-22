@@ -78,6 +78,44 @@ VALUE LixpBuiltin_new(enum LixpBuiltins value)
     return new;
 }
 
+void LixpNumber_destroy(VALUE value)
+{
+    free(value);
+}
+
+void LixpString_destroy(VALUE value)
+{
+    free(LixpString_value(value));
+    free(value);
+}
+
+void LixpCons_destroy(VALUE value)
+{
+    LixpValue_destroy(LixpCons_car(value));
+    LixpValue_destroy(LixpCons_cdr(value));
+    free(value);
+}
+
+void LixpValue_destroy(VALUE value)
+{
+    switch (value->type)
+    {
+    case LixpType_number:
+    case LixpType_character:
+    case LixpType_builtin:
+        LixpNumber_destroy(value);
+        break;
+    case LixpType_string:
+    case LixpType_symbol:
+    case LixpType_keyword:
+        LixpString_destroy(value);
+        break;
+    case LixpType_cons:
+        LixpCons_destroy(value);
+        break;
+    }
+}
+
 /* I'm sorry for using a GNU extension, but I'm lazy */
 
 char *LixpNumber_inspect(VALUE value)
