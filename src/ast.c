@@ -179,34 +179,28 @@ char *LixpCons_inspect_(VALUE value)
 
 char *LixpCons_inspect(VALUE value)
 {
+    char *str;
     /* nil */
     if (LixpCons_car(value) == NULL && LixpCons_cdr(value) == NULL)
-    {
-        char *str;
         asprintf(&str, "nil");
-        return str;
-    }
     /* Improper list */
-    if (LixpCons_cdr(value)->type != LixpType_cons)
+    else if (LixpCons_cdr(value)->type != LixpType_cons)
     {
         char *car, *cdr;
         car = LixpValue_inspect(LixpCons_car(value));
         cdr = LixpValue_inspect(LixpCons_cdr(value));
-        char *str;
         asprintf(&str, "(%s . %s)", car, cdr);
         free(car);
         free(cdr);
-        return str;
     }
     /* Proper List */
     else
     {
         char *inspect_ = LixpCons_inspect_(value);
-        char *str;
         asprintf(&str, "(%s", inspect_);
         free(inspect_);
-        return str;
     }
+    return str;
 }
 
 char *LixpBuiltin_inspect(VALUE value)
