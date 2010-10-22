@@ -60,4 +60,9 @@ todo:
 sloc:
 	@sloccount ./ | grep "(SLOC)"
 
-.PHONY: debug clean distclean check-syntax todo sloc
+git-stats:
+	@echo "$(shell git log --oneline | wc -l) commits"
+	@echo "$(shell git log -p | grep -v '+++' | grep -c '^+') additions"
+	@echo "$(shell git log -p | grep -v -e '---' | grep -c '^-') deletions"
+
+.PHONY: debug clean distclean check-syntax todo sloc git-stats
