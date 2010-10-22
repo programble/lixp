@@ -179,6 +179,13 @@ char *LixpCons_inspect_(VALUE value)
 
 char *LixpCons_inspect(VALUE value)
 {
+    /* nil */
+    if (LixpCons_car(value) == NULL && LixpCons_cdr(value) == NULL)
+    {
+        char *str;
+        asprintf(&str, "nil");
+        return str;
+    }
     /* Improper list */
     if (LixpCons_cdr(value)->type != LixpType_cons)
     {
