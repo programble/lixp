@@ -19,10 +19,25 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#ifdef READLINE
+#ifndef NO_READLINE
 #include <readline/readline.h>
+#include <readline/history.h>
+#else
+
+/* Drop-in replacements for readline functions */
+
+char *readline(const char *prompt)
+{
+    return NULL;
+}
+
+void add_history(char *line)
+{
+    /* nop, no history without GNU Readline */
+    return;
+}
+
 #endif
-/* TODO: Implement a readline function that behaves the same as GNU readline to use if not using GNU Readline */
 
 #include "runtime.h"
 #include "reader.h"
