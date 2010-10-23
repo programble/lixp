@@ -57,23 +57,10 @@ char *Reader_read_until(Reader *reader, const char term[])
     return str;
 }
 
-/* TODO: Nice ordering */
-
 VALUE Reader_read_list(Reader *reader)
 {
     /* TODO: Implement */
     return NULL;
-}
-
-VALUE Reader_read_string(Reader *reader)
-{
-    /* Skip over opening " */
-    reader->index++;
-    /* TODO: Escapes? */
-    VALUE value = LixpString_new(Reader_read_until(reader, "\""));
-    /* Skip over closing " */
-    reader->index++;
-    return value;
 }
 
 VALUE Reader_read_number(Reader *reader)
@@ -88,14 +75,6 @@ VALUE Reader_read_number(Reader *reader)
     return LixpNumber_new(n);
 }
 
-VALUE Reader_read_keyword(Reader *reader)
-{
-    /* TODO: Also check for EOF maybe? */
-    /* Skip over : */
-    reader->index++;
-    return LixpKeyword_new(Reader_read_until(reader, WHITESPACE ")"));
-}
-
 VALUE Reader_read_character(Reader *reader)
 {
     /* TODO: Special cases? */
@@ -103,6 +82,25 @@ VALUE Reader_read_character(Reader *reader)
     reader->index++;
     /* TODO: Check for EOF */
     return LixpCharacter_new(reader->source[reader->index++]);
+}
+
+VALUE Reader_read_string(Reader *reader)
+{
+    /* Skip over opening " */
+    reader->index++;
+    /* TODO: Escapes? */
+    VALUE value = LixpString_new(Reader_read_until(reader, "\""));
+    /* Skip over closing " */
+    reader->index++;
+    return value;
+}
+
+VALUE Reader_read_keyword(Reader *reader)
+{
+    /* TODO: Also check for EOF maybe? */
+    /* Skip over : */
+    reader->index++;
+    return LixpKeyword_new(Reader_read_until(reader, WHITESPACE ")"));
 }
 
 VALUE Reader_read_symbol(Reader *reader)
