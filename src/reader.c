@@ -115,6 +115,12 @@ VALUE Reader_read(Reader *reader)
         return NULL;
     /* TODO: Nice ordering */
     char c = reader->source[reader->index];
+    /* Skip Whitespace */
+    while (str_has_char(WHITESPACE, c))
+    {
+        reader->index++;
+        c = reader->source[reader->index];
+    }
     if (c == '(')
         return Reader_read_list(reader);
     if (c == '"')
