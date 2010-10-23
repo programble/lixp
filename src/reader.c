@@ -53,6 +53,7 @@ char *Reader_read_until(Reader *reader, const char term[])
         str[i-1] = reader->source[reader->index];
         reader->index++;
     }
+    str = realloc(str, i+1);
     str[i] = 0;
     return str;
 }

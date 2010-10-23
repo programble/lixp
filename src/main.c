@@ -41,6 +41,7 @@ char *readline(const char *prompt)
         line = realloc(line, ++i);
         line[i-1] = (char) c;
     }
+    line = realloc(line, i+1);
     line[i] = 0;
     return line;
 }
