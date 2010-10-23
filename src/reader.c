@@ -75,6 +75,7 @@ VALUE Reader_read_list(Reader *reader)
     /* Improper list */
     if (reader->source[reader->index + 1] == '.')
     {
+        /* Skip over . */
         reader->index += 2;
         VALUE cdr = Reader_read(reader);
         /* Skip ) */
