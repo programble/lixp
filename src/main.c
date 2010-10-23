@@ -20,12 +20,15 @@
 #include <stdio.h>
 
 #include "runtime.h"
+#include "reader.h"
 
 int main(int argc, char **argv)
 {
 #ifdef DEBUG    
     /*VALUE foo = LixpCons_new(LixpKeyword_new("foo"), LixpCons_new(LixpKeyword_new("bar"), LixpCons_new(LixpKeyword_new("baz"), LixpCons_new(NULL, NULL))));*/
-    VALUE foo = LixpCons_new(NULL, NULL);
+    /*VALUE foo = LixpCons_new(NULL, NULL);*/
+    Reader *reader = Reader_new("foo");
+    VALUE foo = Reader_read_symbol(reader);
     char *str = LixpValue_inspect(foo);
     printf("%s\n", str);
     free(str);
