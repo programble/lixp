@@ -110,6 +110,9 @@ VALUE Reader_read_symbol(Reader *reader)
 
 VALUE Reader_read(Reader *reader)
 {
+    /* No more to read */
+    if ((unsigned) reader->index >= strlen(reader->source))
+        return NULL;
     /* TODO: Nice ordering */
     char c = reader->source[reader->index];
     if (c == '(')
