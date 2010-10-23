@@ -16,7 +16,7 @@
  *  along with Lixp.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "ast.h"
+#include "runtime.h"
 
 #include <stdlib.h>
 #include <stdio.h>

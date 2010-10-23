@@ -16,8 +16,8 @@
  *  along with Lixp.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __AST_H__
-#define __AST_H__
+#ifndef __RUNTIME_H__
+#define __RUNTIME_H__
 
 #include "scope.h"
 
