@@ -47,9 +47,9 @@ char *Reader_read_until(Reader *reader, const char term[])
     char *str = malloc(i);
     while ((unsigned)reader->index < strlen(reader->source))
     {
-        str = realloc(str, ++i);
         if (str_has_char(term, reader->source[reader->index]))
             break;
+        str = realloc(str, ++i);
         str[i-1] = reader->source[reader->index];
         reader->index++;
     }
