@@ -116,7 +116,7 @@ VALUE Reader_read(Reader *reader)
     /* No more to read */
     if ((unsigned) reader->index >= strlen(reader->source))
         return NULL;
-    /* TODO: Nice ordering */
+    
     char c = reader->source[reader->index];
     /* Skip Whitespace */
     while (str_has_char(WHITESPACE, c))
@@ -124,15 +124,16 @@ VALUE Reader_read(Reader *reader)
         reader->index++;
         c = reader->source[reader->index];
     }
+    
     if (c == '(')
         return Reader_read_list(reader);
-    if (c == '"')
-        return Reader_read_string(reader);
     if (c >= '0' && c <= '9')
         return Reader_read_number(reader);
-    if (c == ':')
-        return Reader_read_keyword(reader);
     if (c == '\\')
         return Reader_read_character(reader);
+    if (c == '"')
+        return Reader_read_string(reader);
+    if (c == ':')
+        return Reader_read_keyword(reader);
     return Reader_read_symbol(reader);
 }
