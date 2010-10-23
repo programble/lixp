@@ -71,4 +71,4 @@ git-stats:
 	@echo "$(shell git log -p | grep -v '+++' | grep -c '^+') additions"
 	@echo "$(shell git log -p | grep -v -e '---' | grep -c '^-') deletions"
 
-.PHONY: debug clean distclean check-syntax todo sloc git-stats
+.PHONY: debug no-readline clean distclean check-syntax todo sloc git-stats
