@@ -19,12 +19,15 @@ CC=clang
 
 INCLUDES=-Iinclude/
 WARNINGS=-Wall -Wextra -Wno-unused-parameter
-DEFINES=-D_GNU_SOURCE
+DEFINES=-D_GNU_SOURCE -DREADLINE
 FLAGS=-std=c99
 CFLAGS=$(FLAGS) $(DEFINES) $(WARNINGS) $(INCLUDES)
 
 DFLAGS=-ggdb -O0
 DDEFINES=-DDEBUG
+
+LIBS=-lreadline
+LDFLAGS=$(LIBS)
 
 SOURCES:=$(wildcard src/*.c)
 OBJECTS:=$(SOURCES:%.c=%.o)
@@ -34,10 +37,13 @@ OUTPUT=lixp
 all: $(SOURCES) $(OUTPUT)
 
 $(OUTPUT): $(OBJECTS)
-	$(CC) $(OBJECTS) -o $@
+	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
 
 %.o: %.c
 	$(CC) $(CFLAGS) -o $@ -c $<
+
+no-readline:
+	@$(MAKE) $(MFLAGS) DEFINES="$(DEFINES) -UREADLINE" LIBS=""
 
 debug:
 	@$(MAKE) $(MFLAGS) FLAGS="$(FLAGS) $(DFLAGS)" DEFINES="$(DEFINES) $(DDEFINES)"

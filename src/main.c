@@ -19,19 +19,33 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#ifdef READLINE
+#include <readline/readline.h>
+#endif
+/* TODO: Implement a readline function that behaves the same as GNU readline to use if not using GNU Readline */
+
 #include "runtime.h"
 #include "reader.h"
 
 int main(int argc, char **argv)
 {
-#ifdef DEBUG    
-    /*VALUE foo = LixpCons_new(LixpKeyword_new("foo"), LixpCons_new(LixpKeyword_new("bar"), LixpCons_new(LixpKeyword_new("baz"), LixpCons_new(NULL, NULL))));*/
-    /*VALUE foo = LixpCons_new(NULL, NULL);*/
-    Reader *reader = Reader_new("foo");
-    VALUE foo = Reader_read_symbol(reader);
-    char *str = LixpValue_inspect(foo);
-    printf("%s\n", str);
-    free(str);
-#endif    
+    while (1)
+    {
+        char *input = readline("=> ");
+        if (input == NULL)
+            break;
+        Reader *reader = Reader_new(input);
+        while (1)
+        {
+            VALUE exp = Reader_read(reader);
+            if (exp == NULL)
+                break;
+            /* TODO: Evaluate expression */
+            char *inspect = LixpValue_inspect(exp);
+            printf("%s\n", inspect);
+            free(inspect);
+        }
+        Reader_destroy(reader);
+    }
     return 0;
 }
