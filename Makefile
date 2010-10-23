@@ -18,7 +18,7 @@
 CC=clang
 
 INCLUDES=-Iinclude/
-WARNINGS=-Wall -Wextra
+WARNINGS=-Wall -Wextra -Wno-unused-parameter
 DEFINES=-D_GNU_SOURCE
 FLAGS=-std=c99
 CFLAGS=$(FLAGS) $(DEFINES) $(WARNINGS) $(INCLUDES)
