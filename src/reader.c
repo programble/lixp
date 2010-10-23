@@ -59,8 +59,32 @@ char *Reader_read_until(Reader *reader, const char term[])
 
 VALUE Reader_read_list(Reader *reader)
 {
-    /* TODO: Implement */
-    return NULL;
+    /* Skip over ( */
+    reader->index++;
+
+    /* Empty List? */
+    if (reader->source[reader->index] == ')')
+    {
+        /* Skip ) */
+        reader->index++;
+        return LixpCons_new(NULL, NULL);
+    }
+
+    VALUE car = Reader_read(reader);
+
+    /* Improper list */
+    if (reader->source[reader->index + 1] == '.')
+    {
+        reader->index += 2;
+        VALUE cdr = Reader_read(reader);
+        /* Skip ) */
+        reader->index++;
+        return LixpCons_new(car, cdr);
+    }
+
+    /* Proper list */
+    reader->index--;
+    return LixpCons_new(car, Reader_read_list(reader));
 }
 
 VALUE Reader_read_number(Reader *reader)
@@ -122,6 +146,10 @@ VALUE Reader_read(Reader *reader)
         reader->index++;
         c = reader->source[reader->index];
     }
+
+    /* Unexpected close-paren */
+    if (c == ')')
+        /* TODO: Handle error somehow */ return NULL;
     
     if (c == '(')
         return Reader_read_list(reader);
