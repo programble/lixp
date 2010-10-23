@@ -91,8 +91,10 @@ void LixpString_destroy(VALUE value)
 
 void LixpCons_destroy(VALUE value)
 {
-    LixpValue_destroy(LixpCons_car(value));
-    LixpValue_destroy(LixpCons_cdr(value));
+    if (LixpCons_car(value))
+        LixpValue_destroy(LixpCons_car(value));
+    if (LixpCons_cdr(value))
+        LixpValue_destroy(LixpCons_cdr(value));
     free(value);
 }
 
