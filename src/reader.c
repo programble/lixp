@@ -22,6 +22,10 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "strutils.h"
+
+#define WHITESPACE " \t\n\r"
+
 Reader *Reader_new(char *source)
 {
     Reader *reader = malloc(sizeof(Reader));
@@ -36,15 +40,6 @@ void Reader_destroy(Reader *reader)
     free(reader);
 }
 
-int char_in(char c, const char clist[])
-{
-    /* TODO: Clean up/rename/move to strutils.h or something? */
-    for (unsigned int i = 0; i < strlen(clist); i++)
-        if (c == clist[i])
-            return 1;
-    return 0;
-}
-
 char *Reader_read_until(Reader *reader, const char term[])
 {
     /* TODO: Clean this up */
@@ -53,7 +48,7 @@ char *Reader_read_until(Reader *reader, const char term[])
     while ((unsigned)reader->index < strlen(reader->source))
     {
         str = realloc(str, ++i);
-        if (char_in(reader->source[reader->index], term))
+        if (str_has_char(term, reader->source[reader->index]))
             break;
         str[i-1] = reader->source[reader->index];
         reader->index++;
