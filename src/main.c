@@ -77,6 +77,7 @@ int main(int argc, char **argv)
             char *inspect = LixpValue_inspect(exp);
             printf("%s\n", inspect);
             free(inspect);
+            LixpValue_destroy(exp);
         }
         Reader_destroy(reader);
     }
