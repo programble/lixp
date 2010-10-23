@@ -57,16 +57,70 @@ char *Reader_read_until(Reader *reader, const char term[])
     return str;
 }
 
-VALUE Reader_read_list(Reader *reader);
-VALUE Reader_read_string(Reader *reader);
-VALUE Reader_read_number(Reader *reader);
-VALUE Reader_read_keyword(Reader *reader);
-VALUE Reader_read_character(Reader *reader);
+/* TODO: Nice ordering */
+
+VALUE Reader_read_list(Reader *reader)
+{
+    /* TODO: Implement */
+    return NULL;
+}
+
+VALUE Reader_read_string(Reader *reader)
+{
+    /* Skip over opening " */
+    reader->index++;
+    /* TODO: Escapes? */
+    return LixpString_new(Reader_read_until(reader, "\""));
+}
+
+VALUE Reader_read_number(Reader *reader)
+{
+    /* TODO: CLean up */
+    char *ns = Reader_read_until(reader, WHITESPACE ")");
+    int n, r;
+    r = sscanf(ns, "%d", &n);
+    /* TODO: Handle errors better somehow? */
+    if (r < 1)
+        return NULL;
+    return LixpNumber_new(n);
+}
+
+VALUE Reader_read_keyword(Reader *reader)
+{
+    /* TODO: Also check for EOF maybe? */
+    /* Skip over : */
+    reader->index++;
+    return LixpKeyword_new(Reader_read_until(reader, WHITESPACE ")"));
+}
+
+VALUE Reader_read_character(Reader *reader)
+{
+    /* TODO: Special cases? */
+    /* Skip over \ */
+    reader->index++;
+    /* TODO: Check for EOF */
+    return LixpCharacter_new(reader->source[reader->index++]);
+}
 
 VALUE Reader_read_symbol(Reader *reader)
 {
-    /* TODO: Check for first character and stuff */
-    return LixpSymbol_new(Reader_read_until(reader, ") \t\n\r"));
+    /* TODO: Check for starting with |*/
+    return LixpSymbol_new(Reader_read_until(reader, WHITESPACE ")"));
 }
 
-VALUE Reader_read(Reader *reader);
+VALUE Reader_read(Reader *reader)
+{
+    /* TODO: Nice ordering */
+    char c = reader->source[reader->index];
+    if (c == '(')
+        return Reader_read_list(reader);
+    if (c == '"')
+        return Reader_read_string(reader);
+    if (c >= '0' && c <= '9')
+        return Reader_read_number(reader);
+    if (c == ':')
+        return Reader_read_keyword(reader);
+    if (c == '\\')
+        return Reader_read_character(reader);
+    return Reader_read_symbol(reader);
+}
