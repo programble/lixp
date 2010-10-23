@@ -28,8 +28,21 @@
 
 char *readline(const char *prompt)
 {
-    /* TODO: Implement */
-    return NULL;
+    printf("%s", prompt);
+    int i = 0;
+    char *line = malloc(i);
+    while (1)
+    {
+        int c = getchar();
+        if (c == EOF && i == 0)
+            return NULL;
+        else if (c == EOF || c == '\n')
+            break;
+        line = realloc(line, ++i);
+        line[i-1] = (char) c;
+    }
+    line[i] = 0;
+    return line;
 }
 
 void add_history(char *line)
@@ -50,6 +63,10 @@ int main(int argc, char **argv)
         char *input = readline("=> ");
         if (input == NULL)
             break;
+        /* Add to history if not blank */
+        if (*input)
+            add_history(input);
+        
         Reader *reader = Reader_new(input);
         while (1)
         {
