@@ -19,7 +19,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#ifndef NO_READLINE
+#ifdef READLINE
 #include <readline/readline.h>
 #include <readline/history.h>
 #else
@@ -28,6 +28,7 @@
 
 char *readline(const char *prompt)
 {
+    /* TODO: Implement */
     return NULL;
 }
 

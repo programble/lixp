@@ -19,7 +19,7 @@ CC=clang
 
 INCLUDES=-Iinclude/
 WARNINGS=-Wall -Wextra -Wno-unused-parameter
-DEFINES=-D_GNU_SOURCE
+DEFINES=-D_GNU_SOURCE -DREADLINE
 FLAGS=-std=c99
 CFLAGS=$(FLAGS) $(DEFINES) $(WARNINGS) $(INCLUDES)
 
@@ -43,7 +43,7 @@ $(OUTPUT): $(OBJECTS)
 	$(CC) $(CFLAGS) -o $@ -c $<
 
 no-readline:
-	@$(MAKE) $(MFLAGS) DEFINES="$(DEFINES) -DNO_READLINE" LIBS=""
+	@$(MAKE) $(MFLAGS) DEFINES="$(DEFINES:-DREADLINE=)" LIBS="$(LIBS:-lreadline=)"
 
 debug:
 	@$(MAKE) $(MFLAGS) FLAGS="$(FLAGS) $(DFLAGS)" DEFINES="$(DEFINES) $(DDEFINES)"
