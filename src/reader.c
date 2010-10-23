@@ -70,7 +70,10 @@ VALUE Reader_read_string(Reader *reader)
     /* Skip over opening " */
     reader->index++;
     /* TODO: Escapes? */
-    return LixpString_new(Reader_read_until(reader, "\""));
+    VALUE value = LixpString_new(Reader_read_until(reader, "\""));
+    /* Skip over closing " */
+    reader->index++;
+    return value;
 }
 
 VALUE Reader_read_number(Reader *reader)
