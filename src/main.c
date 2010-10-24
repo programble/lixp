@@ -61,6 +61,17 @@ void add_history(char *line)
 #include "builtins.h"
 #include "scope.h"
 
+void version_info()
+{
+    printf("Lixp " VERSION "\n" "Compiled " __DATE__ " " __TIME__ " with " COMPILER "\n");
+#ifdef DEBUG
+    printf("Debug Enabled\n");
+#endif
+#ifdef READLINE
+    printf("Readline Enabled\n");
+#endif
+}
+
 int main(int argc, char **argv)
 {
     printf("Lixp %s\n", VERSION);
