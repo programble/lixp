@@ -88,6 +88,9 @@ void LixpBuiltin_cdr_call(VALUE ret, VALUE params, Scope *scope)
     ret->type = cdr->type;
     ret->value1 = cdr->value1;
     ret->value2 = cdr->value2;
-    /* TODO: Fix this horrible memleak (somehow) */
-    /*LixpValue_destroy(params);*/
+    /* Nasty manual GC */
+    free(cdr);
+    LixpValue_destroy(LixpCons_car(list));
+    LixpValue_destroy(LixpCons_cdr(params));
+    free(params);
 }
