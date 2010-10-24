@@ -131,7 +131,16 @@ VALUE Reader_read_keyword(Reader *reader)
 
 VALUE Reader_read_symbol(Reader *reader)
 {
-    /* TODO: Check for starting with |*/
+    if (reader->source[reader->index] == '|')
+    {
+        /* TODO: Allow \| escaping? */
+        /* Skip first | */
+        reader->index++;
+        VALUE value = LixpSymbol_new(Reader_read_until(reader, "|"));
+        /* Skip over ending | */
+        reader->index++;
+        return value;
+    }
     return LixpSymbol_new(Reader_read_until(reader, WHITESPACE ")"));
 }
 

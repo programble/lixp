@@ -21,6 +21,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "strutils.h"
+
 VALUE LixpNumber_new(int value)
 {
     VALUE new = malloc(sizeof(VALUE));
@@ -146,8 +148,11 @@ char *LixpString_inspect(VALUE value)
 char *LixpSymbol_inspect(VALUE value)
 {
     char *str;
-    /* TODO: Check for spaces if we are allowing |foo bar| type symbols */
-    asprintf(&str, "%s", LixpSymbol_value(value));
+    /* TODO: Improve this */
+    if (str_has_char(LixpSymbol_value(value), ' ') || str_has_char(LixpSymbol_value(value), ')') || str_has_char(LixpSymbol_value(value), '\t') || str_has_char(LixpSymbol_value(value), '\n') || str_has_char(LixpSymbol_value(value), '\r'))
+        asprintf(&str, "|%s|", LixpSymbol_value(value));
+    else
+        asprintf(&str, "%s", LixpSymbol_value(value));
     return str;
 }
 
