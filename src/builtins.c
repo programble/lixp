@@ -35,6 +35,7 @@ void LixpBuiltin_call(VALUE ret, VALUE builtin, VALUE params, Scope *scope)
         break;
     case LixpBuiltin_eval:
         LixpBuiltin_eval_call(ret, params, scope);
+        break;
     case LixpBuiltin_car:
         LixpBuiltin_car_call(ret, params, scope);
         break;
