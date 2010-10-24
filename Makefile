@@ -36,11 +36,19 @@ OUTPUT=lixp
 
 all: $(SOURCES) $(OUTPUT)
 
-$(OUTPUT): $(OBJECTS)
+$(OUTPUT): include/version.h $(OBJECTS)
 	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
 
 %.o: %.c
 	$(CC) $(CFLAGS) -o $@ -c $<
+
+include/version.h: $(SOURCES) Makefile
+	@if [ "$(shell git tag --contains $(shell git rev-parse HEAD))" ]; then \
+	echo "#define VERSION \"$(shell git tag --contains $(shell git rev-parse HEAD) | cut -c2-)\"" > $@; \
+	else \
+	echo "#define VERSION \"$(shell git tag | cut -c2-).r$(shell git rev-parse HEAD | cut -c-8)\"" > $@; \
+	fi
+	@echo "#define COMPILER \"$(CC) \" __VERSION__" >> $@
 
 no-readline:
 	@$(MAKE) $(MFLAGS) DEFINES="$(DEFINES:-DREADLINE=)" LIBS="$(LIBS:-lreadline=)"
@@ -49,6 +57,7 @@ debug:
 	@$(MAKE) $(MFLAGS) FLAGS="$(FLAGS) $(DFLAGS)" DEFINES="$(DEFINES) $(DDEFINES)"
 
 clean:
+	rm -f include/version.h
 	rm -f $(OBJECTS)
 	rm -f $(OUTPUT)
 

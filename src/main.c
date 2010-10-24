@@ -54,6 +54,8 @@ void add_history(char *line)
 
 #endif
 
+#include "version.h"
+
 #include "runtime.h"
 #include "reader.h"
 #include "builtins.h"
@@ -61,6 +63,7 @@ void add_history(char *line)
 
 int main(int argc, char **argv)
 {
+    printf("Lixp %s\n", VERSION);
     Scope *global_scope = Scope_new(NULL);
     bind_builtins(global_scope);
     while (1)
