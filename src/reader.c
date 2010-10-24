@@ -155,7 +155,7 @@ VALUE Reader_read(Reader *reader)
     
     if (c == '(')
         return Reader_read_list(reader);
-    if (c >= '0' && c <= '9')
+    if ((c >= '0' && c <= '9') || c == '-')
         return Reader_read_number(reader);
     if (c == '\\')
         return Reader_read_character(reader);
