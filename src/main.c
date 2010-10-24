@@ -19,40 +19,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#ifdef READLINE
-#include <readline/readline.h>
-#include <readline/history.h>
-#else
-
-/* Drop-in replacements for readline functions */
-
-char *readline(const char *prompt)
-{
-    printf("%s", prompt);
-    int i = 0;
-    char *line = malloc(i);
-    while (1)
-    {
-        int c = getchar();
-        if (c == EOF && i == 0)
-            return NULL;
-        else if (c == EOF || c == '\n')
-            break;
-        line = realloc(line, ++i);
-        line[i-1] = (char) c;
-    }
-    line = realloc(line, i+1);
-    line[i] = 0;
-    return line;
-}
-
-void add_history(char *line)
-{
-    /* nop, no history without GNU Readline */
-    return;
-}
-
-#endif
+#include "readline.h"
 
 #include "version.h"
 
