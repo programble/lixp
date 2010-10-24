@@ -261,6 +261,9 @@ void LixpSymbol_evaluate(VALUE value, Scope *scope)
 
 void LixpCons_evaluate(VALUE value, Scope *scope)
 {
+    /* nil evaluates to nil */
+    if (LixpCons_car(value) == NULL && LixpCons_cdr(value) == NULL)
+        return;
     switch (LixpCons_car(value)->type)
     {
     case LixpType_symbol:
