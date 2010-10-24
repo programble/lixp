@@ -235,3 +235,52 @@ char *LixpValue_inspect(VALUE value)
         return NULL;
     }
 }
+
+#include "builtins.h"
+
+void LixpSymbol_evaluate(VALUE value, Scope *scope)
+{
+    VALUE new = Scope_get(scope, LixpSymbol_value(value));
+    /* Undefined */
+    if (new == NULL)
+    {
+        value->type = LixpType_cons;
+        LixpCons_car(value) = NULL;
+        LixpCons_cdr(value) = NULL;
+        return;
+    }
+    value->type = new->type;
+    value->value1 = new->value1;
+    value->value2 = new->value2;
+}
+
+void LixpCons_evaluate(VALUE value, Scope *scope)
+{
+    switch (LixpCons_car(value)->type)
+    {
+    case LixpType_symbol:
+    case LixpType_cons:
+        LixpValue_evaluate(LixpCons_car(value), scope);
+    case LixpType_builtin:
+        LixpBuiltin_call(value, LixpCons_car(value), LixpCons_cdr(value), scope);
+        break;
+    default:
+        /* TODO: Handle error somehow */
+        return;
+    }
+}
+
+void LixpValue_evaluate(VALUE value, Scope *scope)
+{
+    switch (value->type)
+    {
+    case LixpType_symbol:
+        LixpSymbol_evaluate(value, scope);
+        break;
+    case LixpType_cons:
+        LixpCons_evaluate(value, scope);
+        break;
+    default:
+        return;
+    }
+}

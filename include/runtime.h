@@ -38,6 +38,8 @@ enum LixpTypes
 
 enum LixpBuiltins
 {
+    LixpBuiltin_quote,
+    LixpBuiltin_eval,
     LixpBuiltin_car,
     LixpBuiltin_cdr,
     /*
@@ -102,5 +104,10 @@ char *LixpCons_inspect(VALUE value);
 char *LixpBuiltin_inspect(VALUE value);
 
 char *LixpValue_inspect(VALUE value);
+
+void LixpSymbol_evaluate(VALUE value, Scope *scope);
+void LixpCons_evaluate(VALUE value, Scope *scope);
+
+void LixpValue_evaluate(VALUE value, Scope *scope);
 
 #endif

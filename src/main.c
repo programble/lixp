@@ -56,9 +56,13 @@ void add_history(char *line)
 
 #include "runtime.h"
 #include "reader.h"
+#include "builtins.h"
+#include "scope.h"
 
 int main(int argc, char **argv)
 {
+    Scope *global_scope = Scope_new(NULL);
+    bind_builtins(global_scope);
     while (1)
     {
         char *input = readline("=> ");
@@ -74,7 +78,7 @@ int main(int argc, char **argv)
             VALUE exp = Reader_read(reader);
             if (exp == NULL)
                 break;
-            /* TODO: Evaluate expression */
+            LixpValue_evaluate(exp, global_scope);
             char *inspect = LixpValue_inspect(exp);
             printf("%s\n", inspect);
             free(inspect);
