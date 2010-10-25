@@ -58,7 +58,11 @@ int main(int argc, char **argv)
         {
             VALUE exp = Reader_read(reader);
             if (exp == NULL)
+            {
+                if (reader->error)
+                    printf("Error: %s\n", reader->error);
                 break;
+            }
             LixpValue_evaluate(exp, global_scope);
             char *inspect = LixpValue_inspect(exp);
             printf("%s\n", inspect);

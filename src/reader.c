@@ -31,6 +31,7 @@ Reader *Reader_new(char *source)
     Reader *reader = malloc(sizeof(Reader));
     reader->source = source;
     reader->index = 0;
+    reader->error = NULL;
     return reader;
 }
 
@@ -97,7 +98,10 @@ VALUE Reader_read_number(Reader *reader)
     r = sscanf(ns, "%d", &n);
     /* TODO: Handle errors better somehow? */
     if (r < 1)
+    {
+        reader->error = "Invalid number literal";
         return NULL;
+    }
     return LixpNumber_new(n);
 }
 
@@ -160,7 +164,10 @@ VALUE Reader_read(Reader *reader)
 
     /* Unexpected close-paren */
     if (c == ')')
-        /* TODO: Handle error somehow */ return NULL;
+    {
+        reader->error = "Mismatched parenthesis";
+        return NULL;
+    }
     
     if (c == '(')
         return Reader_read_list(reader);

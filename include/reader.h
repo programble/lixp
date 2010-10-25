@@ -25,6 +25,7 @@ typedef struct Reader
 {
     char *source;
     int index;
+    char *error;
 } Reader;
 
 Reader *Reader_new(char *source);
