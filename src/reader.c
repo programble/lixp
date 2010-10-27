@@ -41,6 +41,24 @@ void Reader_destroy(Reader *reader)
     free(reader);
 }
 
+char *Reader_read_while(Reader *reader, const char term[])
+{
+    /* TODO: Clean up */
+    int i = 0;
+    char *str = malloc(i);
+    while ((unsigned)reader->index < strlen(reader->source))
+    {
+        if (!str_has_char(term, reader->source[reader->index]))
+            break;
+        str = realloc(str, ++i);
+        str[i-1] = reader->source[reader->index];
+        reader->index++;
+    }
+    str = realloc(str, i+1);
+    str[i] = 0;
+    return str;
+}
+
 char *Reader_read_until(Reader *reader, const char term[])
 {
     /* TODO: Clean this up */
@@ -93,7 +111,8 @@ VALUE Reader_read_list(Reader *reader)
 VALUE Reader_read_number(Reader *reader)
 {
     /* TODO: CLean up */
-    char *ns = Reader_read_until(reader, WHITESPACE ")");
+    /*char *ns = Reader_read_until(reader, WHITESPACE ")");*/
+    char *ns = Reader_read_while(reader, "-0123456789");
     int n, r;
     r = sscanf(ns, "%d", &n);
     /* TODO: Handle errors better somehow? */
