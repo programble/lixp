@@ -18,6 +18,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <gc.h>
 
 #include "readline.h"
 
@@ -41,6 +42,7 @@ void version_info()
 
 int main(int argc, char **argv)
 {
+    GC_INIT();
     printf("Lixp %s\n", VERSION);
     Scope *global_scope = Scope_new(NULL);
     bind_builtins(global_scope);
@@ -66,10 +68,7 @@ int main(int argc, char **argv)
             LixpValue_evaluate(exp, global_scope);
             char *inspect = LixpValue_inspect(exp);
             printf("%s\n", inspect);
-            free(inspect);
-            LixpValue_destroy(exp);
         }
-        Reader_destroy(reader);
     }
     return 0;
 }

@@ -76,16 +76,6 @@ VALUE LixpKeyword_new(char *value);
 VALUE LixpCons_new(VALUE car, VALUE cdr);
 VALUE LixpBuiltin_new(enum LixpBuiltins value);
 
-void LixpNumber_destroy(VALUE value);
-#define LixpCharacter_destroy(v) LixpNumber_destroy(v)
-void LixpString_destroy(VALUE value);
-#define LixpSymbol_destroy(v) LixpString_destroy(v)
-#define LixpKeyword_destroy(v) LixpString_destroy(v)
-void LixpCons_destroy(VALUE value);
-#define LixpBuiltin_destroy(v) LixpNumber_destroy(v)
-
-void LixpValue_destroy(VALUE value);
-
 #define LixpNumber_value(x) x->value1.int_value
 #define LixpCharacter_value(x) x->value1.char_value
 #define LixpString_value(x) x->value1.str_value

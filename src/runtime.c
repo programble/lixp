@@ -20,12 +20,13 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <gc.h>
 
 #include "strutils.h"
 
 VALUE LixpNumber_new(int value)
 {
-    VALUE new = malloc(sizeof(VALUE));
+    VALUE new = GC_MALLOC(sizeof(VALUE));
     new->type = LixpType_number;
     LixpNumber_value(new) = value;
     return new;
@@ -33,7 +34,7 @@ VALUE LixpNumber_new(int value)
 
 VALUE LixpCharacter_new(char value)
 {
-    VALUE new = malloc(sizeof(VALUE));
+    VALUE new = GC_MALLOC(sizeof(VALUE));
     new->type = LixpType_character;
     LixpCharacter_value(new) = value;
     return new;
@@ -41,7 +42,7 @@ VALUE LixpCharacter_new(char value)
 
 VALUE LixpString_new(char *value)
 {
-    VALUE new = malloc(sizeof(VALUE));
+    VALUE new = GC_MALLOC(sizeof(VALUE));
     new->type = LixpType_string;
     LixpString_value(new) = value;
     return new;
@@ -49,7 +50,7 @@ VALUE LixpString_new(char *value)
 
 VALUE LixpSymbol_new(char *value)
 {
-    VALUE new = malloc(sizeof(VALUE));
+    VALUE new = GC_MALLOC(sizeof(VALUE));
     new->type = LixpType_symbol;
     LixpString_value(new) = value;
     return new;
@@ -57,7 +58,7 @@ VALUE LixpSymbol_new(char *value)
 
 VALUE LixpKeyword_new(char *value)
 {
-    VALUE new = malloc(sizeof(VALUE));
+    VALUE new = GC_MALLOC(sizeof(VALUE));
     new->type = LixpType_keyword;
     LixpString_value(new) = value;
     return new;
@@ -65,7 +66,7 @@ VALUE LixpKeyword_new(char *value)
 
 VALUE LixpCons_new(VALUE car, VALUE cdr)
 {
-    VALUE new = malloc(sizeof(VALUE));
+    VALUE new = GC_MALLOC(sizeof(VALUE));
     new->type = LixpType_cons;
     LixpCons_car(new) = car;
     LixpCons_cdr(new) = cdr;
@@ -74,50 +75,10 @@ VALUE LixpCons_new(VALUE car, VALUE cdr)
 
 VALUE LixpBuiltin_new(enum LixpBuiltins value)
 {
-    VALUE new = malloc(sizeof(VALUE));
+    VALUE new = GC_MALLOC(sizeof(VALUE));
     new->type = LixpType_builtin;
     LixpBuiltin_value(new) = value;
     return new;
-}
-
-void LixpNumber_destroy(VALUE value)
-{
-    free(value);
-}
-
-void LixpString_destroy(VALUE value)
-{
-    free(LixpString_value(value));
-    free(value);
-}
-
-void LixpCons_destroy(VALUE value)
-{
-    if (LixpCons_car(value))
-        LixpValue_destroy(LixpCons_car(value));
-    if (LixpCons_cdr(value))
-        LixpValue_destroy(LixpCons_cdr(value));
-    free(value);
-}
-
-void LixpValue_destroy(VALUE value)
-{
-    switch (value->type)
-    {
-    case LixpType_number:
-    case LixpType_character:
-    case LixpType_builtin:
-        LixpNumber_destroy(value);
-        break;
-    case LixpType_string:
-    case LixpType_symbol:
-    case LixpType_keyword:
-        LixpString_destroy(value);
-        break;
-    case LixpType_cons:
-        LixpCons_destroy(value);
-        break;
-    }
 }
 
 /* I'm sorry for using a GNU extension, but I'm lazy */

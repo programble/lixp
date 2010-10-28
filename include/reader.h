@@ -29,7 +29,6 @@ typedef struct Reader
 } Reader;
 
 Reader *Reader_new(char *source);
-void Reader_destroy(Reader *reader);
 
 VALUE Reader_read_list(Reader *reader);
 VALUE Reader_read_string(Reader *reader);

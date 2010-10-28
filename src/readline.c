@@ -18,13 +18,15 @@
 
 #include "readline.h"
 
+#include <gc.h>
+
 #ifndef READLINE
 
 char *readline(const char *prompt)
 {
     printf("%s", prompt);
     int i = 0;
-    char *line = malloc(i);
+    char *line = GC_MALLOC(i);
     while (1)
     {
         int c = getchar();
@@ -32,10 +34,10 @@ char *readline(const char *prompt)
             return NULL;
         else if (c == EOF || c == '\n')
             break;
-        line = realloc(line, ++i);
+        line = GC_REALLOC(line, ++i);
         line[i-1] = (char) c;
     }
-    line = realloc(line, i+1);
+    line = GC_REALLOC(line, i+1);
     line[i] = 0;
     return line;
 }

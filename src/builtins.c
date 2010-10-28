@@ -18,8 +18,14 @@
 
 #include "builtins.h"
 
+#include <stdlib.h>
+#include <gc.h>
+
 void bind_builtins(Scope *scope)
 {
+    /* Standard symbols */
+    Scope_set(scope, "nil", LixpCons_new(NULL, NULL));
+    Scope_set(scope, "t", LixpSymbol_new("t"));
     Scope_set(scope, "quote", LixpBuiltin_new(LixpBuiltin_quote));
     Scope_set(scope, "eval", LixpBuiltin_new(LixpBuiltin_eval));
     Scope_set(scope, "car", LixpBuiltin_new(LixpBuiltin_car));
@@ -51,7 +57,6 @@ void LixpBuiltin_quote_call(VALUE ret, VALUE params, Scope *scope)
     ret->type = arg->type;
     ret->value1 = arg->value1;
     ret->value2 = arg->value2;
-    LixpValue_destroy(params);
 }
 
 void LixpBuiltin_eval_call(VALUE ret, VALUE params, Scope *scope)
@@ -62,7 +67,6 @@ void LixpBuiltin_eval_call(VALUE ret, VALUE params, Scope *scope)
     ret->type = arg->type;
     ret->value1 = arg->value1;
     ret->value2 = arg->value2;
-    LixpValue_destroy(params);
 }
 
 void LixpBuiltin_car_call(VALUE ret, VALUE params, Scope *scope)
@@ -75,7 +79,6 @@ void LixpBuiltin_car_call(VALUE ret, VALUE params, Scope *scope)
     ret->type = car->type;
     ret->value1 = car->value1;
     ret->value2 = car->value2;
-    LixpValue_destroy(params);
 }
 
 void LixpBuiltin_cdr_call(VALUE ret, VALUE params, Scope *scope)
@@ -88,9 +91,4 @@ void LixpBuiltin_cdr_call(VALUE ret, VALUE params, Scope *scope)
     ret->type = cdr->type;
     ret->value1 = cdr->value1;
     ret->value2 = cdr->value2;
-    /* Nasty manual GC */
-    free(cdr);
-    LixpValue_destroy(LixpCons_car(list));
-    LixpValue_destroy(LixpCons_cdr(params));
-    free(params);
 }
