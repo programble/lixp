@@ -14,7 +14,7 @@ Building
 
 ### Building Boehm GC
 
- 1. Download http://www.hpl.hp.com/personal/Hans_Boehm/gc/gc_source/gc.tar.gz
+ 1. Download [gc.tar.gz](http://www.hpl.hp.com/personal/Hans_Boehm/gc/gc_source/gc.tar.gz)
  2. Decompress archive
  3. `cd` into `gc-version` directory
  4. Run `./configure --prefix=/usr --disable-threads`
