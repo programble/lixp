@@ -17,7 +17,9 @@
 
 CC=clang
 
-INCLUDES=-Iinclude/
+GCPREFIX=/usr
+
+INCLUDES=-Iinclude/ -I$(GCPREFIX)/include
 WARNINGS=-Wall -Wextra -Wno-unused-parameter
 DEFINES=-D_GNU_SOURCE -DREADLINE
 FLAGS=-std=c99
@@ -26,8 +28,9 @@ CFLAGS=$(FLAGS) $(DEFINES) $(WARNINGS) $(INCLUDES)
 DFLAGS=-ggdb -O0
 DDEFINES=-DDEBUG
 
-LIBS=-lreadline
-LDFLAGS=$(LIBS)
+LIBPATHS=-L$(GCPREFIX)/lib
+LIBS=-lreadline -lgc
+LDFLAGS=$(LIBPATHS) $(LIBS)
 
 SOURCES:=$(wildcard src/*.c)
 OBJECTS:=$(SOURCES:%.c=%.o)
