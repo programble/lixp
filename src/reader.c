@@ -40,7 +40,7 @@ char *Reader_read_while(Reader *reader, const char term[])
 {
     /* TODO: Clean up */
     int i = 0;
-    char *str = GC_MALLOC(i);
+    char *str = GC_MALLOC_ATOMIC(i);
     while ((unsigned)reader->index < strlen(reader->source))
     {
         if (!str_has_char(term, reader->source[reader->index]))
@@ -58,7 +58,7 @@ char *Reader_read_until(Reader *reader, const char term[])
 {
     /* TODO: Clean this up */
     int i = 0;
-    char *str = GC_MALLOC(i);
+    char *str = GC_MALLOC_ATOMIC(i);
     while ((unsigned)reader->index < strlen(reader->source))
     {
         if (str_has_char(term, reader->source[reader->index]))
