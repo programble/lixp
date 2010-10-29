@@ -19,12 +19,13 @@
 #include "scope.h"
 
 #include <stdlib.h>
+#include <gc.h>
 
 #include "treemap.h"
 
 Scope *Scope_new(Scope *parent)
 {
-    Scope *scope = malloc(sizeof(Scope));
+    Scope *scope = GC_MALLOC(sizeof(Scope));
     scope->parent = parent;
     scope->map = TreeMap_new();
     return scope;

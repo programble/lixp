@@ -20,6 +20,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <gc.h>
 
 #define STRGT(x, y) strcmp(x, y) > 0
 #define STRLT(x, y) strcmp(x, y) < 0
@@ -27,7 +28,7 @@
 
 TreeMap *TreeMap_new()
 {
-    TreeMap *map = malloc(sizeof(TreeMap));
+    TreeMap *map = GC_MALLOC(sizeof(TreeMap));
     map->root = NULL;
     return map;
 }
@@ -36,7 +37,7 @@ void TreeMapNode_set(TreeMapNode *node, const char *key, void *value)
 {
     if (STRGT(key, node->key) && !node->greater)
     {
-        TreeMapNode *new_node = malloc(sizeof(TreeMapNode));
+        TreeMapNode *new_node = GC_MALLOC(sizeof(TreeMapNode));
         new_node->key = key;
         new_node->value = value;
         new_node->lesser = NULL;
@@ -46,7 +47,7 @@ void TreeMapNode_set(TreeMapNode *node, const char *key, void *value)
     }
     else if (STRLT(key, node->key) && !node->lesser)
     {
-        TreeMapNode *new_node = malloc(sizeof(TreeMapNode));
+        TreeMapNode *new_node = GC_MALLOC(sizeof(TreeMapNode));
         new_node->key = key;
         new_node->value = value;
         new_node->lesser = NULL;
@@ -66,7 +67,7 @@ void TreeMap_set(TreeMap *map, const char *key, void *value)
 {
     if (map->root == NULL)
     {
-        TreeMapNode *node = malloc(sizeof(TreeMapNode));
+        TreeMapNode *node = GC_MALLOC(sizeof(TreeMapNode));
         node->key = key;
         node->value = value;
         node->greater = NULL;
@@ -117,7 +118,6 @@ void TreeMapNode_del(TreeMap *map, TreeMapNode *node, const char *key)
                 successor->parent->greater = successor->greater;
             if (successor->greater)
                 successor->greater->parent = successor->parent;
-            free(successor);
         }
         else if (node->lesser)
         {
@@ -129,7 +129,6 @@ void TreeMapNode_del(TreeMap *map, TreeMapNode *node, const char *key)
                 node->parent->greater = node->lesser;
             if (node->lesser)
                 node->lesser->parent = node->parent;
-            free(node);
         }
         else if (node->greater)
         {
@@ -141,7 +140,6 @@ void TreeMapNode_del(TreeMap *map, TreeMapNode *node, const char *key)
                 node->parent->greater = node->greater;
             if (node->greater)
                 node->greater->parent = node->parent;
-            free(node);
         }
         else
         {
@@ -151,7 +149,6 @@ void TreeMapNode_del(TreeMap *map, TreeMapNode *node, const char *key)
                 node->parent->lesser = NULL;
             else
                 node->parent->greater = NULL;
-            free(node);
         }
     }
 }
