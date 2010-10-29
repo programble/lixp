@@ -26,7 +26,7 @@ char *readline(const char *prompt)
 {
     printf("%s", prompt);
     int i = 0;
-    char *line = GC_MALLOC(i);
+    char *line = GC_MALLOC_ATOMIC(i);
     while (1)
     {
         int c = getchar();
