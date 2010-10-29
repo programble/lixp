@@ -81,6 +81,14 @@ VALUE LixpBuiltin_new(enum LixpBuiltins value)
     return new;
 }
 
+VALUE LixpError_new(char *value)
+{
+    VALUE new = GC_MALLOC(sizeof(VALUE));
+    new->type = LixpType_error;
+    LixpError_value(new) = value;
+    return new;
+}
+
 /* I'm sorry for using a GNU extension, but I'm lazy */
 
 char *LixpNumber_inspect(VALUE value)
@@ -179,6 +187,13 @@ char *LixpBuiltin_inspect(VALUE value)
     return str;
 }
 
+char *LixpError_inspect(VALUE value)
+{
+    char *str;
+    asprintf(&str, "!%s", LixpError_value(value));
+    return str;
+}
+
 char *LixpValue_inspect(VALUE value)
 {
     switch (value->type)
@@ -197,6 +212,8 @@ char *LixpValue_inspect(VALUE value)
         return LixpCons_inspect(value);
     case LixpType_builtin:
         return LixpBuiltin_inspect(value);
+    case LixpType_error:
+        return LixpError_inspect(value);
     default:
         return NULL;
     }
@@ -210,9 +227,8 @@ void LixpSymbol_evaluate(VALUE value, Scope *scope)
     /* Undefined */
     if (new == NULL)
     {
-        value->type = LixpType_cons;
-        LixpCons_car(value) = NULL;
-        LixpCons_cdr(value) = NULL;
+        value->type = LixpType_error;
+        LixpError_value(value) = "undefined";
         return;
     }
     value->type = new->type;

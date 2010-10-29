@@ -30,6 +30,7 @@ enum LixpTypes
     LixpType_keyword,
     LixpType_cons,
     LixpType_builtin,
+    LixpType_error,
     /*
     LixpType_lambda,
     LixpType_macro,
@@ -75,6 +76,7 @@ VALUE LixpSymbol_new(char *value);
 VALUE LixpKeyword_new(char *value);
 VALUE LixpCons_new(VALUE car, VALUE cdr);
 VALUE LixpBuiltin_new(enum LixpBuiltins value);
+VALUE LixpError_new(char *value);
 
 #define LixpNumber_value(x) x->value1.int_value
 #define LixpCharacter_value(x) x->value1.char_value
@@ -84,6 +86,7 @@ VALUE LixpBuiltin_new(enum LixpBuiltins value);
 #define LixpCons_car(x) x->value1.lixpvalue_value
 #define LixpCons_cdr(x) x->value2.lixpvalue_value
 #define LixpBuiltin_value(x) x->value1.builtin_value
+#define LixpError_value(x) x->value1.str_value
 
 char *LixpNumber_inspect(VALUE value);
 char *LixpCharacter_inspect(VALUE value);
@@ -92,6 +95,7 @@ char *LixpSymbol_inspect(VALUE value);
 char *LixpKeyword_inspect(VALUE value);
 char *LixpCons_inspect(VALUE value);
 char *LixpBuiltin_inspect(VALUE value);
+char *LixpError_inspect(VALUE value);
 
 char *LixpValue_inspect(VALUE value);
 
