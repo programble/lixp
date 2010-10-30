@@ -17,7 +17,7 @@ Building
  1. Download [gc.tar.gz](http://www.hpl.hp.com/personal/Hans_Boehm/gc/gc_source/gc.tar.gz)
  2. Decompress archive
  3. `cd` into `gc-version` directory
- 4. Run `./configure --prefix=/usr --disable-threads`
+ 4. Run `./configure --prefix=/usr`
  5. Run `make`
  6. As root, run `make install`
 
