@@ -63,8 +63,7 @@ union LixpValueValue
 typedef struct LixpValue
 {
     enum LixpTypes type;
-    union LixpValueValue value1;
-    union LixpValueValue value2;
+    union LixpValueValue value1, value2;
 } LixpValue;
 
 #define VALUE LixpValue*
