@@ -78,6 +78,10 @@ todo:
 sloc:
 	@sloccount ./ | grep "(SLOC)"
 
+size:
+	@du -h $(OUTPUT)
+	@du -sh .
+
 git-stats:
 	@echo "$(shell git log --oneline | wc -l) commits"
 	@echo "$(shell git log -p | grep -v '+++' | grep -c '^+') additions"
