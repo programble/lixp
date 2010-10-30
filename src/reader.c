@@ -72,10 +72,23 @@ char *Reader_read_until(Reader *reader, const char term[])
     return str;
 }
 
+void Reader_skip_whitespace(Reader *reader)
+{
+    while (str_has_char(WHITESPACE, reader->source[reader->index]))
+    {
+        reader->index++;
+    }
+}
+
+/* This whole function is broked */
+/* TODO: Fixit */
 VALUE Reader_read_list(Reader *reader)
 {
     /* Skip over ( */
-    reader->index++;
+    if (reader->source[reader->index] == '(')
+        reader->index++;
+
+    Reader_skip_whitespace(reader);
 
     /* Empty List? */
     if (reader->source[reader->index] == ')')
@@ -86,6 +99,8 @@ VALUE Reader_read_list(Reader *reader)
     }
 
     VALUE car = Reader_read(reader);
+    if (car == NULL)
+        return NULL;
 
     /* Improper list */
     if (reader->source[reader->index + 1] == '.')
@@ -93,14 +108,19 @@ VALUE Reader_read_list(Reader *reader)
         /* Skip over . */
         reader->index += 2;
         VALUE cdr = Reader_read(reader);
+        if (cdr == NULL)
+            return NULL;
         /* Skip ) */
         reader->index++;
         return LixpCons_new(car, cdr);
     }
 
     /* Proper list */
-    reader->index--;
-    return LixpCons_new(car, Reader_read_list(reader));
+    Reader_skip_whitespace(reader);
+    VALUE cdr = Reader_read_list(reader);
+    if (cdr == NULL)
+        return NULL;
+    return LixpCons_new(car, cdr);
 }
 
 VALUE Reader_read_number(Reader *reader)
@@ -167,14 +187,9 @@ VALUE Reader_read(Reader *reader)
     /* No more to read */
     if ((unsigned) reader->index >= strlen(reader->source))
         return NULL;
-    
+
+    Reader_skip_whitespace(reader);
     char c = reader->source[reader->index];
-    /* Skip Whitespace */
-    while (str_has_char(WHITESPACE, c))
-    {
-        reader->index++;
-        c = reader->source[reader->index];
-    }
 
     /* Unexpected close-paren */
     if (c == ')')
