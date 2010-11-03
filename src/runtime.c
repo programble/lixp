@@ -20,19 +20,13 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#ifdef IHATEYOU
 #include <gc.h>
-#else
-#define GC_MALLOC malloc
-#define GC_REALLOC realloc
-#define GC_MALLOC_ATOMIC malloc
-#endif
 
 #include "strutils.h"
 
 VALUE LixpNumber_new(int value)
 {
-    VALUE new = GC_MALLOC(sizeof(VALUE));
+    VALUE new = GC_MALLOC(sizeof(LixpValue));
     new->type = LixpType_number;
     LixpNumber_value(new) = value;
     return new;
@@ -40,7 +34,7 @@ VALUE LixpNumber_new(int value)
 
 VALUE LixpCharacter_new(char value)
 {
-    VALUE new = GC_MALLOC(sizeof(VALUE));
+    VALUE new = GC_MALLOC(sizeof(LixpValue));
     new->type = LixpType_character;
     LixpCharacter_value(new) = value;
     return new;
@@ -48,7 +42,7 @@ VALUE LixpCharacter_new(char value)
 
 VALUE LixpString_new(char *value)
 {
-    VALUE new = GC_MALLOC(sizeof(VALUE));
+    VALUE new = GC_MALLOC(sizeof(LixpValue));
     new->type = LixpType_string;
     LixpString_value(new) = value;
     return new;
@@ -56,7 +50,7 @@ VALUE LixpString_new(char *value)
 
 VALUE LixpSymbol_new(char *value)
 {
-    VALUE new = GC_MALLOC(sizeof(VALUE));
+    VALUE new = GC_MALLOC(sizeof(LixpValue));
     new->type = LixpType_symbol;
     LixpString_value(new) = value;
     return new;
@@ -64,7 +58,7 @@ VALUE LixpSymbol_new(char *value)
 
 VALUE LixpKeyword_new(char *value)
 {
-    VALUE new = GC_MALLOC(sizeof(VALUE));
+    VALUE new = GC_MALLOC(sizeof(LixpValue));
     new->type = LixpType_keyword;
     LixpString_value(new) = value;
     return new;
@@ -72,7 +66,7 @@ VALUE LixpKeyword_new(char *value)
 
 VALUE LixpCons_new(VALUE car, VALUE cdr)
 {
-    VALUE new = GC_MALLOC(sizeof(VALUE));
+    VALUE new = GC_MALLOC(sizeof(LixpValue));
     new->type = LixpType_cons;
     LixpCons_car(new) = car;
     LixpCons_cdr(new) = cdr;
@@ -81,7 +75,7 @@ VALUE LixpCons_new(VALUE car, VALUE cdr)
 
 VALUE LixpBuiltin_new(enum LixpBuiltins value)
 {
-    VALUE new = GC_MALLOC(sizeof(VALUE));
+    VALUE new = GC_MALLOC(sizeof(LixpValue));
     new->type = LixpType_builtin;
     LixpBuiltin_value(new) = value;
     return new;
@@ -89,13 +83,11 @@ VALUE LixpBuiltin_new(enum LixpBuiltins value)
 
 VALUE LixpError_new(char *value)
 {
-    VALUE new = GC_MALLOC(sizeof(VALUE));
+    VALUE new = GC_MALLOC(sizeof(LixpValue));
     new->type = LixpType_error;
     LixpError_value(new) = value;
     return new;
 }
-
-/* I'm sorry for using a GNU extension, but I'm lazy */
 
 char *LixpNumber_inspect(VALUE value)
 {
