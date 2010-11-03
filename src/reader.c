@@ -84,43 +84,76 @@ void Reader_skip_whitespace(Reader *reader)
 /* TODO: Fixit */
 VALUE Reader_read_list(Reader *reader)
 {
-    /* Skip over ( */
-    if (reader->source[reader->index] == '(')
+        VALUE cons = LixpCons_new(NULL, NULL);
+
+    /* Skip ( */
+    reader->index++;
+    Reader_skip_whitespace(reader);
+
+    /* Empty list */
+    if (reader->source[reader->index] == ')')
+    {
         reader->index++;
+        return cons;
+    }
+
+    /* Read the car */
+    VALUE car = Reader_read(reader);
+    /* Return NULL if car returned NULL (error) */
+    if (car == NULL)
+        return NULL;
+    LixpCons_car(cons) = car;
 
     Reader_skip_whitespace(reader);
 
-    /* Empty List? */
-    if (reader->source[reader->index] == ')')
-    {
-        /* Skip ) */
-        reader->index++;
-        return LixpCons_new(NULL, NULL);
-    }
-
-    VALUE car = Reader_read(reader);
-    if (car == NULL)
-        return NULL;
-
     /* Improper list */
-    if (reader->source[reader->index + 1] == '.')
+    if (reader->source[reader->index] == '.')
     {
-        /* Skip over . */
-        reader->index += 2;
+        reader->index++;
+        /* Read the cdr */
         VALUE cdr = Reader_read(reader);
+        /* Error if error */
         if (cdr == NULL)
             return NULL;
-        /* Skip ) */
+        LixpCons_cdr(cons) = cdr;
+        /* Skip over ) */
         reader->index++;
-        return LixpCons_new(car, cdr);
+        
+        return cons;
     }
 
     /* Proper list */
     Reader_skip_whitespace(reader);
+    /* Step back one to simulate opening ( */
+    reader->index--;
+    /* Read in the rest of the list recursively */
     VALUE cdr = Reader_read_list(reader);
+    /* Error if error */
     if (cdr == NULL)
         return NULL;
-    return LixpCons_new(car, cdr);
+    LixpCons_cdr(cons) = cdr;
+    return cons;
+
+#ifdef TEH_LOOPY_WAY    
+    /* Proper list */
+    Reader_skip_whitespace(reader);
+    
+    VALUE cdr = LixpCons_new(NULL, NULL);
+    LixpCons_cdr(cons) = cdr;
+    while (reader->source[reader->index] != ')')
+    {
+        VALUE car = Reader_read(reader);
+        if (car == NULL)
+            return NULL;
+        LixpCons_car(cdr) = car;
+        LixpCons_cdr(cdr) = LixpCons_new(NULL, NULL);
+        cdr = LixpCons_cdr(cdr);
+        Reader_skip_whitespace(reader);
+    }
+    /* Skip closing paren ) */
+    reader->index++;
+    return cons;
+#endif    
 }
 
 VALUE Reader_read_number(Reader *reader)
