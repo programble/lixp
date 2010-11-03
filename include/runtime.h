@@ -78,6 +78,8 @@ VALUE LixpCons_new(VALUE car, VALUE cdr);
 VALUE LixpBuiltin_new(enum LixpBuiltins value);
 VALUE LixpError_new(char *value);
 
+VALUE LixpValue_copy(VALUE value);
+
 #define LixpNumber_value(x) x->value1.int_value
 #define LixpCharacter_value(x) x->value1.char_value
 #define LixpString_value(x) x->value1.str_value

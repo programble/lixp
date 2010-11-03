@@ -89,6 +89,15 @@ VALUE LixpError_new(char *value)
     return new;
 }
 
+VALUE LixpValue_copy(VALUE value)
+{
+    VALUE new = GC_MALLOC(sizeof(LixpValue));
+    new->type = value->type;
+    new->value1 = value->value1;
+    new->value2 = value->value2;
+    return new;
+}
+
 char *LixpNumber_inspect(VALUE value)
 {
     char *str;
@@ -247,9 +256,28 @@ void LixpCons_evaluate(VALUE value, Scope *scope)
     case LixpType_builtin:
         LixpBuiltin_call(value, LixpCons_car(value), LixpCons_cdr(value), scope);
         break;
-    default:
-        /* TODO: Handle error somehow */
-        return;
+    /* Non-callables */
+    case LixpType_number:
+        LixpError_value(value) = "cannot-call-number";
+        value->type = LixpType_error;
+        break;
+    case LixpType_character:
+        LixpError_value(value) = "cannot-call-character";
+        value->type = LixpType_error;
+        break;
+    case LixpType_string:
+        LixpError_value(value) = "cannot-call-string";
+        value->type = LixpType_error;
+        break;
+    case LixpType_keyword:
+        /* TODO: Are we going to have this do anything? */
+        LixpError_value(value) = "cannot-call-keyword";
+        value->type = LixpType_error;
+        break;
+    case LixpType_error:
+        LixpError_value(value) = "cannot-call-error";
+        value->type = LixpType_error;
+        break;
     }
 }
 
