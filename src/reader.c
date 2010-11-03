@@ -84,7 +84,7 @@ void Reader_skip_whitespace(Reader *reader)
 /* TODO: Fixit */
 VALUE Reader_read_list(Reader *reader)
 {
-        VALUE cons = LixpCons_new(NULL, NULL);
+    VALUE cons = LixpCons_new(NULL, NULL);
 
     /* Skip ( */
     reader->index++;

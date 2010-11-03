@@ -20,7 +20,13 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#ifdef IHATEYOU
 #include <gc.h>
+#else
+#define GC_MALLOC malloc
+#define GC_REALLOC realloc
+#define GC_MALLOC_ATOMIC malloc
+#endif
 
 #include "strutils.h"
 
