@@ -146,15 +146,15 @@ char *LixpCons_inspect_(VALUE value)
     {
         car = LixpValue_inspect(LixpCons_car(value));
         asprintf(&str, "%s)", car);
-        free(car);
+        /*free(car);*/
     }
     else
     {
         car = LixpValue_inspect(LixpCons_car(value));
         char *cdr = LixpCons_inspect_(LixpCons_cdr(value));
         asprintf(&str, "%s %s", car, cdr);
-        free(car);
-        free(cdr);
+        /*free(car);
+          free(cdr);*/
     }
     return str;
 }
@@ -172,15 +172,15 @@ char *LixpCons_inspect(VALUE value)
         car = LixpValue_inspect(LixpCons_car(value));
         cdr = LixpValue_inspect(LixpCons_cdr(value));
         asprintf(&str, "(%s . %s)", car, cdr);
-        free(car);
-        free(cdr);
+        /*free(car);
+          free(cdr);*/
     }
     /* Proper List */
     else
     {
         char *inspect_ = LixpCons_inspect_(value);
         asprintf(&str, "(%s", inspect_);
-        free(inspect_);
+        /*free(inspect_);*/
     }
     return str;
 }

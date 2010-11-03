@@ -18,10 +18,28 @@
 
 #include "strutils.h"
 
+#include <stdio.h>
+#include <stdarg.h>
+#include <gc.h>
+
 int str_has_char(const char *str, char c)
 {
     for (const char *sc = str; *sc != 0; sc++)
         if (*sc == c)
             return 1;
+    return 0;
+}
+
+int asprintf(char **ret, const char *format, ...)
+{
+    char *s = GC_MALLOC_ATOMIC(2);
+    va_list ap;
+    va_start(ap, format);
+    int length = vsnprintf(s, 2, format, ap);
+    s = GC_REALLOC(s, length + 1);
+    vsnprintf(s, length + 1, format, ap);
+    va_end(ap);
+    *ret = s;
+    /* ? */
     return 0;
 }

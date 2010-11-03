@@ -21,4 +21,6 @@
 
 int str_has_char(const char *str, char c);
 
+int asprintf(char **ret, const char *format, ...);
+
 #endif
