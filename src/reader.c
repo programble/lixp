@@ -80,8 +80,6 @@ void Reader_skip_whitespace(Reader *reader)
     }
 }
 
-/* This whole function is broked */
-/* TODO: Fixit */
 VALUE Reader_read_list(Reader *reader)
 {
     VALUE cons = LixpCons_new(NULL, NULL);
@@ -89,6 +87,12 @@ VALUE Reader_read_list(Reader *reader)
     /* Skip ( */
     reader->index++;
     Reader_skip_whitespace(reader);
+
+    if ((unsigned)reader->index >= strlen(reader->source))
+    {
+        reader->error = "Unexpected EOF";
+        return NULL;
+    }
 
     /* Empty list */
     if (reader->source[reader->index] == ')')
