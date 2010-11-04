@@ -43,8 +43,8 @@ enum LixpBuiltins
     LixpBuiltin_eval,
     LixpBuiltin_car,
     LixpBuiltin_cdr,
-    /*
     LixpBuiltin_cons,
+    /*
     LixpBuiltin_cond,
     */
 };

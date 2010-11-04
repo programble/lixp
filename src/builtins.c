@@ -30,6 +30,7 @@ void bind_builtins(Scope *scope)
     Scope_set(scope, "eval", LixpBuiltin_new(LixpBuiltin_eval));
     Scope_set(scope, "car", LixpBuiltin_new(LixpBuiltin_car));
     Scope_set(scope, "cdr", LixpBuiltin_new(LixpBuiltin_cdr));
+    Scope_set(scope, "cons", LixpBuiltin_new(LixpBuiltin_cons));
 }
 
 void LixpBuiltin_call(VALUE ret, VALUE builtin, VALUE params, Scope *scope)
@@ -47,6 +48,9 @@ void LixpBuiltin_call(VALUE ret, VALUE builtin, VALUE params, Scope *scope)
         break;
     case LixpBuiltin_cdr:
         LixpBuiltin_cdr_call(ret, params, scope);
+        break;
+    case LixpBuiltin_cons:
+        LixpBuiltin_cons_call(ret, params, scope);
         break;
     }
 }
@@ -91,4 +95,15 @@ void LixpBuiltin_cdr_call(VALUE ret, VALUE params, Scope *scope)
     ret->type = cdr->type;
     ret->value1 = cdr->value1;
     ret->value2 = cdr->value2;
+}
+
+void LixpBuiltin_cons_call(VALUE ret, VALUE params, Scope *scope)
+{
+    VALUE car = LixpCons_car(params);
+    LixpValue_evaluate(car, scope);
+    VALUE cdr = LixpCons_car(LixpCons_cdr(params));
+    LixpValue_evaluate(cdr, scope);
+    ret->type = LixpType_cons;
+    LixpCons_car(ret) = car;
+    LixpCons_cdr(ret) = cdr;
 }

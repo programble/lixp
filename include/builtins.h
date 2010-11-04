@@ -30,5 +30,6 @@ void LixpBuiltin_quote_call(VALUE ret, VALUE params, Scope *scope);
 void LixpBuiltin_eval_call(VALUE ret, VALUE params, Scope *scope);
 void LixpBuiltin_car_call(VALUE ret, VALUE params, Scope *scope);
 void LixpBuiltin_cdr_call(VALUE ret, VALUE params, Scope *scope);
+void LixpBuiltin_cons_call(VALUE ret, VALUE params, Scope *scope);
 
 #endif
