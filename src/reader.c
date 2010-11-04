@@ -137,27 +137,6 @@ VALUE Reader_read_list(Reader *reader)
         return NULL;
     LixpCons_cdr(cons) = cdr;
     return cons;
-
-#ifdef TEH_LOOPY_WAY    
-    /* Proper list */
-    Reader_skip_whitespace(reader);
-    
-    VALUE cdr = LixpCons_new(NULL, NULL);
-    LixpCons_cdr(cons) = cdr;
-    while (reader->source[reader->index] != ')')
-    {
-        VALUE car = Reader_read(reader);
-        if (car == NULL)
-            return NULL;
-        LixpCons_car(cdr) = car;
-        LixpCons_cdr(cdr) = LixpCons_new(NULL, NULL);
-        cdr = LixpCons_cdr(cdr);
-        Reader_skip_whitespace(reader);
-    }
-    /* Skip closing paren ) */
-    reader->index++;
-    return cons;
-#endif    
 }
 
 VALUE Reader_read_number(Reader *reader)
