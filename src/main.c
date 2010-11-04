@@ -19,6 +19,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <gc.h>
+#include <getopt.h>
 
 #include "readline.h"
 
@@ -39,9 +40,18 @@ void version_info()
     printf(__DATE__ " " COMPILER "\n");
 }
 
-int main(int argc, char **argv)
+void opt_help(char *self)
 {
-    GC_INIT();
+    printf("Usage: %s [option] ... [file]\n"
+           "Options:\n"
+           "  -r, --repl                  Start a REPL\n"
+           "  -e EXPR, --evaluate=EXPR    Evaluate a single expression\n"
+           "  --version                   Print version information\n",
+           self);
+}
+
+void repl()
+{
     printf("Lixp %s\n", VERSION);
     Scope *global_scope = Scope_new(NULL);
     bind_builtins(global_scope);
@@ -69,5 +79,45 @@ int main(int argc, char **argv)
             printf("%s\n", inspect);
         }
     }
+}
+
+int main(int argc, char **argv)
+{
+    GC_INIT();
+    struct option options[] =
+    {
+        {"version", no_argument, NULL, 'v'},
+        {"help", no_argument, NULL, 'h'},
+        {"evaluate", required_argument, NULL, 'e'},
+        {"repl", no_argument, NULL, 'r'},
+        {0, 0, 0, 0}
+    };
+
+    int o;
+    while (1)
+    {
+        o = getopt_long(argc, argv, "he:r", options, NULL);
+        if (o == -1)
+            break;
+
+        switch(o)
+        {
+        case 'v':
+            version_info();
+            return 0;
+        case 'h':
+            opt_help(argv[0]);
+            return 0;
+        case 'e':
+            /* TODO: Stuffs */
+        case 'r':
+            repl();
+            return 0;
+        default:
+            return 1;
+        }
+    }
+    /* Start a repl by default */
+    repl();
     return 0;
 }
