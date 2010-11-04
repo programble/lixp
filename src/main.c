@@ -64,7 +64,7 @@ int main(int argc, char **argv)
                     printf("Error: %s\n", reader->error);
                 break;
             }
-            LixpValue_evaluate(exp, global_scope);
+            exp = LixpValue_evaluate(exp, global_scope);
             char *inspect = LixpValue_inspect(exp);
             printf("%s\n", inspect);
         }

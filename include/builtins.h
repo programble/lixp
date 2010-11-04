@@ -24,12 +24,12 @@
 
 void bind_builtins(Scope *scope);
 
-void LixpBuiltin_call(VALUE ret, VALUE builtin, VALUE params, Scope *scope);
+VALUE LixpBuiltin_call(VALUE builtin, VALUE params, Scope *scope);
 
-void LixpBuiltin_quote_call(VALUE ret, VALUE params, Scope *scope);
-void LixpBuiltin_eval_call(VALUE ret, VALUE params, Scope *scope);
-void LixpBuiltin_car_call(VALUE ret, VALUE params, Scope *scope);
-void LixpBuiltin_cdr_call(VALUE ret, VALUE params, Scope *scope);
-void LixpBuiltin_cons_call(VALUE ret, VALUE params, Scope *scope);
+VALUE LixpBuiltin_quote_call(VALUE params, Scope *scope);
+VALUE LixpBuiltin_eval_call(VALUE params, Scope *scope);
+VALUE LixpBuiltin_car_call(VALUE params, Scope *scope);
+VALUE LixpBuiltin_cdr_call(VALUE params, Scope *scope);
+VALUE LixpBuiltin_cons_call(VALUE params, Scope *scope);
 
 #endif

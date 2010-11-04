@@ -101,9 +101,9 @@ char *LixpError_inspect(VALUE value);
 
 char *LixpValue_inspect(VALUE value);
 
-void LixpSymbol_evaluate(VALUE value, Scope *scope);
-void LixpCons_evaluate(VALUE value, Scope *scope);
+VALUE LixpSymbol_evaluate(VALUE value, Scope *scope);
+VALUE LixpCons_evaluate(VALUE value, Scope *scope);
 
-void LixpValue_evaluate(VALUE value, Scope *scope);
+VALUE LixpValue_evaluate(VALUE value, Scope *scope);
 
 #endif

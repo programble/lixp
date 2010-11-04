@@ -228,70 +228,52 @@ char *LixpValue_inspect(VALUE value)
 
 #include "builtins.h"
 
-void LixpSymbol_evaluate(VALUE value, Scope *scope)
+VALUE LixpSymbol_evaluate(VALUE value, Scope *scope)
 {
-    VALUE new = Scope_get(scope, LixpSymbol_value(value));
-    /* Undefined */
-    if (new == NULL)
-    {
-        value->type = LixpType_error;
-        LixpError_value(value) = "undefined";
-        return;
-    }
-    value->type = new->type;
-    value->value1 = new->value1;
-    value->value2 = new->value2;
+    VALUE get = Scope_get(scope, LixpSymbol_value(value));
+    if (!get)
+        return LixpError_new("undefined");
+    return get;
 }
 
-void LixpCons_evaluate(VALUE value, Scope *scope)
+VALUE LixpCons_evaluate(VALUE value, Scope *scope)
 {
     /* nil evaluates to nil */
     if (LixpCons_car(value) == NULL && LixpCons_cdr(value) == NULL)
-        return;
+        return LixpCons_new(NULL, NULL);
+
     switch (LixpCons_car(value)->type)
     {
     case LixpType_symbol:
     case LixpType_cons:
-        LixpValue_evaluate(LixpCons_car(value), scope);
+        LixpCons_car(value) = LixpValue_evaluate(LixpCons_car(value), scope);
     case LixpType_builtin:
-        LixpBuiltin_call(value, LixpCons_car(value), LixpCons_cdr(value), scope);
-        break;
-    /* Non-callables */
+        return LixpBuiltin_call(LixpCons_car(value), LixpCons_cdr(value), scope);
+    /* TODO: Come up with better names for these errors maybe */
     case LixpType_number:
-        LixpError_value(value) = "cannot-call-number";
-        value->type = LixpType_error;
-        break;
+        return LixpError_new("cannot-call-number");
     case LixpType_character:
-        LixpError_value(value) = "cannot-call-character";
-        value->type = LixpType_error;
-        break;
+        return LixpError_new("cannot-call-character");
     case LixpType_string:
-        LixpError_value(value) = "cannot-call-string";
-        value->type = LixpType_error;
-        break;
+        return LixpError_new("cannot-call-string");
     case LixpType_keyword:
-        /* TODO: Are we going to have this do anything? */
-        LixpError_value(value) = "cannot-call-keyword";
-        value->type = LixpType_error;
-        break;
+        return LixpError_new("cannot-call-keyword");
     case LixpType_error:
-        LixpError_value(value) = "cannot-call-error";
-        value->type = LixpType_error;
-        break;
+        return LixpError_new("cannot-call-error");
+    default:
+        return LixpError_new("cannot-call-wtf");
     }
 }
 
-void LixpValue_evaluate(VALUE value, Scope *scope)
+VALUE LixpValue_evaluate(VALUE value, Scope *scope)
 {
     switch (value->type)
     {
     case LixpType_symbol:
-        LixpSymbol_evaluate(value, scope);
-        break;
+        return LixpSymbol_evaluate(value, scope);
     case LixpType_cons:
-        LixpCons_evaluate(value, scope);
-        break;
+        return LixpCons_evaluate(value, scope);
     default:
-        return;
+        return value;
     }
 }

@@ -33,77 +33,53 @@ void bind_builtins(Scope *scope)
     Scope_set(scope, "cons", LixpBuiltin_new(LixpBuiltin_cons));
 }
 
-void LixpBuiltin_call(VALUE ret, VALUE builtin, VALUE params, Scope *scope)
+VALUE LixpBuiltin_call(VALUE builtin, VALUE params, Scope *scope)
 {
     switch (LixpBuiltin_value(builtin))
     {
     case LixpBuiltin_quote:
-        LixpBuiltin_quote_call(ret, params, scope);
-        break;
+        return LixpBuiltin_quote_call(params, scope);
     case LixpBuiltin_eval:
-        LixpBuiltin_eval_call(ret, params, scope);
-        break;
+        return LixpBuiltin_eval_call(params, scope);
     case LixpBuiltin_car:
-        LixpBuiltin_car_call(ret, params, scope);
-        break;
+        return LixpBuiltin_car_call(params, scope);
     case LixpBuiltin_cdr:
-        LixpBuiltin_cdr_call(ret, params, scope);
-        break;
+        return LixpBuiltin_cdr_call(params, scope);
     case LixpBuiltin_cons:
-        LixpBuiltin_cons_call(ret, params, scope);
-        break;
+        return LixpBuiltin_cons_call(params, scope);
+    default:
+        return LixpError_new("unknown-builtin");
     }
 }
 
-void LixpBuiltin_quote_call(VALUE ret, VALUE params, Scope *scope)
+VALUE LixpBuiltin_quote_call(VALUE params, Scope *scope)
 {
-    VALUE arg = LixpCons_car(params);
-    ret->type = arg->type;
-    ret->value1 = arg->value1;
-    ret->value2 = arg->value2;
+    return LixpCons_car(params);
 }
 
-void LixpBuiltin_eval_call(VALUE ret, VALUE params, Scope *scope)
+VALUE LixpBuiltin_eval_call(VALUE params, Scope *scope)
 {
-    VALUE arg = LixpCons_car(params);
-    LixpValue_evaluate(arg, scope);
-    LixpValue_evaluate(arg, scope);
-    ret->type = arg->type;
-    ret->value1 = arg->value1;
-    ret->value2 = arg->value2;
+    return LixpValue_evaluate(LixpValue_evaluate(LixpCons_car(params), scope), scope);
 }
 
-void LixpBuiltin_car_call(VALUE ret, VALUE params, Scope *scope)
+
+VALUE LixpBuiltin_car_call(VALUE params, Scope *scope)
 {
-    VALUE list = LixpCons_car(params);
-    LixpValue_evaluate(list, scope);
+    VALUE list = LixpValue_evaluate(LixpCons_car(params), scope);
     if (list->type != LixpType_cons)
-        /* TODO: Error */ return;
-    VALUE car = LixpCons_car(list);
-    ret->type = car->type;
-    ret->value1 = car->value1;
-    ret->value2 = car->value2;
+        return LixpError_new("unexpected-type"); /* TODO: Better error */
+    return LixpCons_car(list);
 }
 
-void LixpBuiltin_cdr_call(VALUE ret, VALUE params, Scope *scope)
+VALUE LixpBuiltin_cdr_call(VALUE params, Scope *scope)
 {
-    VALUE list = LixpCons_car(params);
-    LixpValue_evaluate(list, scope);
+    VALUE list = LixpValue_evaluate(LixpCons_car(params), scope);
     if (list->type != LixpType_cons)
-        /* TODO: Error */ return;
-    VALUE cdr = LixpCons_cdr(list);
-    ret->type = cdr->type;
-    ret->value1 = cdr->value1;
-    ret->value2 = cdr->value2;
+        return LixpError_new("unexpected-type"); /* TODO: Better error */
+    return LixpCons_cdr(list);
 }
 
-void LixpBuiltin_cons_call(VALUE ret, VALUE params, Scope *scope)
+VALUE LixpBuiltin_cons_call(VALUE params, Scope *scope)
 {
-    VALUE car = LixpCons_car(params);
-    LixpValue_evaluate(car, scope);
-    VALUE cdr = LixpCons_car(LixpCons_cdr(params));
-    LixpValue_evaluate(cdr, scope);
-    ret->type = LixpType_cons;
-    LixpCons_car(ret) = car;
-    LixpCons_cdr(ret) = cdr;
+    return LixpCons_new(LixpValue_evaluate(LixpCons_car(params), scope), LixpValue_evaluate(LixpCons_car(LixpCons_cdr(params)), scope));
 }
