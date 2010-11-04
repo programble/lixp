@@ -29,15 +29,14 @@
 #include "builtins.h"
 #include "scope.h"
 
+#define S(x) #x
+#define SS(x) S(x)
+#define GC_VERSION SS(GC_VERSION_MAJOR) "." SS(GC_VERSION_MINOR)
 void version_info()
 {
-    printf("Lixp " VERSION "\n" "Compiled " __DATE__ " " __TIME__ " with " COMPILER "\n");
-#ifdef DEBUG
-    printf("Debug Enabled\n");
-#endif
-#ifdef READLINE
-    printf("Readline Enabled\n");
-#endif
+    printf("Lixp " VERSION "\n");
+    printf("Boehm GC " GC_VERSION "\n");
+    printf(__DATE__ " " COMPILER "\n");
 }
 
 int main(int argc, char **argv)
