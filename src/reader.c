@@ -198,6 +198,17 @@ VALUE Reader_read_symbol(Reader *reader)
     return LixpSymbol_new(Reader_read_until(reader, WHITESPACE ")"));
 }
 
+VALUE Reader_read_quote(Reader *reader)
+{
+    /* Skip ' */
+    reader->index++;
+
+    /* Read the quoted expression */
+    VALUE expression = Reader_read(reader);
+
+    return LixpCons_new(LixpBuiltin_new(LixpBuiltin_quote), LixpCons_new(expression, LixpCons_new(NULL, NULL)));
+}
+
 VALUE Reader_read(Reader *reader)
 {
     /* No more to read */
@@ -224,5 +235,7 @@ VALUE Reader_read(Reader *reader)
         return Reader_read_string(reader);
     if (c == ':')
         return Reader_read_keyword(reader);
+    if (c == '\'')
+        return Reader_read_quote(reader);
     return Reader_read_symbol(reader);
 }
