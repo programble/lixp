@@ -81,6 +81,23 @@ void repl()
     }
 }
 
+void evaluate(char *expression)
+{
+    Scope *global_scope = Scope_new(NULL);
+    bind_builtins(global_scope);
+    Reader *reader = Reader_new(expression);
+    VALUE exp = Reader_read(reader);
+    if (exp == NULL)
+    {
+        if (reader->error)
+            printf("Error: %s\n", reader->error);
+        return;
+    }
+    exp = LixpValue_evaluate(exp, global_scope);
+    char *inspect = LixpValue_inspect(exp);
+    printf("%s\n", inspect);
+}
+
 int main(int argc, char **argv)
 {
     GC_INIT();
@@ -109,7 +126,8 @@ int main(int argc, char **argv)
             opt_help(argv[0]);
             return 0;
         case 'e':
-            /* TODO: Stuffs */
+            evaluate(optarg);
+            return 0;
         case 'r':
             repl();
             return 0;
