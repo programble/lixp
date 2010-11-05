@@ -42,7 +42,7 @@ void version_info()
 
 void opt_help(char *self)
 {
-    printf("Usage: %s [option] ... [file]\n"
+    printf("Usage: %s [option]... [file]\n"
            "Options:\n"
            "  -r, --repl                  Start a REPL\n"
            "  -e EXPR, --evaluate=EXPR    Evaluate a single expression\n"
