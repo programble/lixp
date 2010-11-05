@@ -108,7 +108,7 @@ char *LixpNumber_inspect(VALUE value)
 char *LixpCharacter_inspect(VALUE value)
 {
     char *str;
-    /* TODO: Special cases (space, etc) */
+    /* TODO: Special cases */
     asprintf(&str, "\\%c", LixpCharacter_value(value));
     return str;
 }
@@ -124,7 +124,6 @@ char *LixpString_inspect(VALUE value)
 char *LixpSymbol_inspect(VALUE value)
 {
     char *str;
-    /* TODO: Improve this */
     if (str_has_char(LixpSymbol_value(value), ' ') || str_has_char(LixpSymbol_value(value), ')') || str_has_char(LixpSymbol_value(value), '\t') || str_has_char(LixpSymbol_value(value), '\n') || str_has_char(LixpSymbol_value(value), '\r'))
         asprintf(&str, "|%s|", LixpSymbol_value(value));
     else
@@ -190,7 +189,7 @@ char *LixpBuiltin_inspect(VALUE value)
 {
     /* TODO: Change this maybe? */
     char *str;
-    asprintf(&str, "<LixpBuiltin:%d@%#08x>", LixpBuiltin_value(value), (unsigned int)value);
+    asprintf(&str, "#<LixpBuiltin:%d@%#08x>", LixpBuiltin_value(value), (unsigned int)value);
     return str;
 }
 

@@ -21,6 +21,9 @@
 #include <stdlib.h>
 #include <gc.h>
 
+#define params_require_1(params) if (LixpCons_car(params) == NULL) return LixpError_new("wrong-number-of-arguments");
+#define params_require_2(params) if (LixpCons_car(params) == NULL || LixpCons_car(LixpCons_cdr(params)) == NULL) return LixpError_new("wrong-number-of-arguments");
+
 void bind_builtins(Scope *scope)
 {
     /* Standard symbols */
@@ -54,17 +57,20 @@ VALUE LixpBuiltin_call(VALUE builtin, VALUE params, Scope *scope)
 
 VALUE LixpBuiltin_quote_call(VALUE params, Scope *scope)
 {
+    params_require_1(params);
     return LixpCons_car(params);
 }
 
 VALUE LixpBuiltin_eval_call(VALUE params, Scope *scope)
 {
+    params_require_1(params);
     return LixpValue_evaluate(LixpValue_evaluate(LixpCons_car(params), scope), scope);
 }
 
 
 VALUE LixpBuiltin_car_call(VALUE params, Scope *scope)
 {
+    params_require_1(params);
     VALUE list = LixpValue_evaluate(LixpCons_car(params), scope);
     if (list->type != LixpType_cons)
         return LixpError_new("unexpected-type"); /* TODO: Better error */
@@ -73,6 +79,7 @@ VALUE LixpBuiltin_car_call(VALUE params, Scope *scope)
 
 VALUE LixpBuiltin_cdr_call(VALUE params, Scope *scope)
 {
+    params_require_1(params);
     VALUE list = LixpValue_evaluate(LixpCons_car(params), scope);
     if (list->type != LixpType_cons)
         return LixpError_new("unexpected-type"); /* TODO: Better error */
@@ -81,5 +88,6 @@ VALUE LixpBuiltin_cdr_call(VALUE params, Scope *scope)
 
 VALUE LixpBuiltin_cons_call(VALUE params, Scope *scope)
 {
+    params_require_2(params);
     return LixpCons_new(LixpValue_evaluate(LixpCons_car(params), scope), LixpValue_evaluate(LixpCons_car(LixpCons_cdr(params)), scope));
 }
