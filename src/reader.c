@@ -181,9 +181,13 @@ VALUE Reader_read_string(Reader *reader)
 
 VALUE Reader_read_keyword(Reader *reader)
 {
-    /* TODO: Also check for EOF maybe? */
     /* Skip over : */
     reader->index++;
+    if ((unsigned)reader->index >= strlen(reader->source))
+    {
+        reader->error = "Unexpected EOF";
+        return NULL;
+    }
     return LixpKeyword_new(Reader_read_until(reader, WHITESPACE ")"));
 }
 
