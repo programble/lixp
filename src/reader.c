@@ -160,7 +160,11 @@ VALUE Reader_read_character(Reader *reader)
     /* TODO: Special cases? */
     /* Skip over \ */
     reader->index++;
-    /* TODO: Check for EOF */
+    if ((unsigned)reader->index >= strlen(reader->source))
+    {
+        reader->error = "Unexpected EOF";
+        return NULL;
+    }
     return LixpCharacter_new(reader->source[reader->index++]);
 }
 
