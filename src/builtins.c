@@ -25,6 +25,9 @@
 #define params_require_2(params) if (LixpCons_car(params) == NULL || LixpCons_car(LixpCons_cdr(params)) == NULL) return LixpError_new("wrong-number-of-arguments");
 #define params_require_3(params) if (LixpCons_car(params) == NULL || LixpCons_car(LixpCons_cdr(params)) == NULL || LixpCons_car(LixpCons_cdr(LixpCons_cdr(params))) == NULL) return LixpError_new("wrong-number-of-arguments");
 
+#define t LixpSymbol_new("t")
+#define nil LixpCons_new(NULL, NULL)
+
 void bind_builtins(Scope *scope)
 {
     /* Standard symbols */
@@ -36,6 +39,8 @@ void bind_builtins(Scope *scope)
     Scope_set(scope, "cdr", LixpBuiltin_new(LixpBuiltin_cdr));
     Scope_set(scope, "cons", LixpBuiltin_new(LixpBuiltin_cons));
     Scope_set(scope, "if", LixpBuiltin_new(LixpBuiltin_if));
+    Scope_set(scope, "=", LixpBuiltin_new(LixpBuiltin_eq));
+    Scope_set(scope, "def", LixpBuiltin_new(LixpBuiltin_def));
 }
 
 VALUE LixpBuiltin_call(VALUE builtin, VALUE params, Scope *scope)
@@ -54,6 +59,10 @@ VALUE LixpBuiltin_call(VALUE builtin, VALUE params, Scope *scope)
         return LixpBuiltin_cons_call(params, scope);
     case LixpBuiltin_if:
         return LixpBuiltin_if_call(params, scope);
+    case LixpBuiltin_eq:
+        return LixpBuiltin_eq_call(params, scope);
+    case LixpBuiltin_def:
+        return LixpBuiltin_def_call(params, scope);
     default:
         return LixpError_new("unknown-builtin");
     }
@@ -108,4 +117,36 @@ VALUE LixpBuiltin_if_call(VALUE params, Scope *scope)
         return LixpValue_evaluate(elsethen, scope);
     else
         return LixpValue_evaluate(then, scope);
+}
+
+VALUE LixpBuiltin_eq_call(VALUE params, Scope *scope)
+{
+    params_require_2(params);
+
+    VALUE a = LixpCons_car(params);
+    VALUE b = LixpCons_car(LixpCons_cdr(params));
+
+    if (a->type != b->type)
+        return nil;
+    if (a->value1.int_value != b->value1.int_value)
+        return nil;
+    if (a->type == LixpType_cons && a->value2.int_value != b->value2.int_value)
+        return nil;
+    return t;
+}
+
+VALUE LixpBuiltin_def_call(VALUE params, Scope *scope)
+{
+    params_require_2(params);
+
+    VALUE symbol = LixpCons_car(params);
+    VALUE value = LixpCons_car(LixpCons_cdr(params));
+
+    if (symbol->type != LixpType_symbol)
+        return LixpError_new("cannot-bind-to-non-symbol");
+    if (Scope_get(scope, LixpSymbol_value(symbol)))
+        return LixpError_new("symbol-already-bound");
+
+    Scope_set(scope, LixpSymbol_value(symbol), LixpValue_evaluate(value, scope));
+    return symbol;
 }

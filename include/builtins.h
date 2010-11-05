@@ -32,5 +32,7 @@ VALUE LixpBuiltin_car_call(VALUE params, Scope *scope);
 VALUE LixpBuiltin_cdr_call(VALUE params, Scope *scope);
 VALUE LixpBuiltin_cons_call(VALUE params, Scope *scope);
 VALUE LixpBuiltin_if_call(VALUE params, Scope *scope);
+VALUE LixpBuiltin_eq_call(VALUE params, Scope *scope);
+VALUE LixpBuiltin_def_call(VALUE params, Scope *scope);
 
 #endif
