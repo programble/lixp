@@ -241,5 +241,10 @@ VALUE Reader_read(Reader *reader)
         return Reader_read_keyword(reader);
     if (c == '\'')
         return Reader_read_quote(reader);
+    if (c == ';')
+    {
+        Reader_read_until(reader, "\n\r");
+        return Reader_read(reader);
+    }
     return Reader_read_symbol(reader);
 }
