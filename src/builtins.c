@@ -21,6 +21,8 @@
 #include <stdlib.h>
 #include <gc.h>
 
+#include "version.h"
+
 #define params_require_1(params) if (LixpCons_car(params) == NULL) return LixpError_new("wrong-number-of-arguments");
 #define params_require_2(params) if (LixpCons_car(params) == NULL || LixpCons_car(LixpCons_cdr(params)) == NULL) return LixpError_new("wrong-number-of-arguments");
 #define params_require_3(params) if (LixpCons_car(params) == NULL || LixpCons_car(LixpCons_cdr(params)) == NULL || LixpCons_car(LixpCons_cdr(LixpCons_cdr(params))) == NULL) return LixpError_new("wrong-number-of-arguments");
@@ -33,6 +35,9 @@ void bind_builtins(Scope *scope)
     /* Standard symbols */
     Scope_set(scope, "nil", LixpCons_new(NULL, NULL));
     Scope_set(scope, "t", LixpSymbol_new("t"));
+    /* Constants */
+    Scope_set(scope, "*lixp-version*", LixpString_new(VERSION));
+    /* Builtin functions */
     Scope_set(scope, "quote", LixpBuiltin_new(LixpBuiltin_quote));
     Scope_set(scope, "eval", LixpBuiltin_new(LixpBuiltin_eval));
     Scope_set(scope, "car", LixpBuiltin_new(LixpBuiltin_car));
