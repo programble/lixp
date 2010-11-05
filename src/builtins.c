@@ -23,6 +23,7 @@
 
 #define params_require_1(params) if (LixpCons_car(params) == NULL) return LixpError_new("wrong-number-of-arguments");
 #define params_require_2(params) if (LixpCons_car(params) == NULL || LixpCons_car(LixpCons_cdr(params)) == NULL) return LixpError_new("wrong-number-of-arguments");
+#define params_require_3(params) if (LixpCons_car(params) == NULL || LixpCons_car(LixpCons_cdr(params)) == NULL || LixpCons_car(LixpCons_cdr(LixpCons_cdr(params))) == NULL) return LixpError_new("wrong-number-of-arguments");
 
 void bind_builtins(Scope *scope)
 {
@@ -34,6 +35,7 @@ void bind_builtins(Scope *scope)
     Scope_set(scope, "car", LixpBuiltin_new(LixpBuiltin_car));
     Scope_set(scope, "cdr", LixpBuiltin_new(LixpBuiltin_cdr));
     Scope_set(scope, "cons", LixpBuiltin_new(LixpBuiltin_cons));
+    Scope_set(scope, "if", LixpBuiltin_new(LixpBuiltin_if));
 }
 
 VALUE LixpBuiltin_call(VALUE builtin, VALUE params, Scope *scope)
@@ -50,6 +52,8 @@ VALUE LixpBuiltin_call(VALUE builtin, VALUE params, Scope *scope)
         return LixpBuiltin_cdr_call(params, scope);
     case LixpBuiltin_cons:
         return LixpBuiltin_cons_call(params, scope);
+    case LixpBuiltin_if:
+        return LixpBuiltin_if_call(params, scope);
     default:
         return LixpError_new("unknown-builtin");
     }
@@ -90,4 +94,18 @@ VALUE LixpBuiltin_cons_call(VALUE params, Scope *scope)
 {
     params_require_2(params);
     return LixpCons_new(LixpValue_evaluate(LixpCons_car(params), scope), LixpValue_evaluate(LixpCons_car(LixpCons_cdr(params)), scope));
+}
+
+VALUE LixpBuiltin_if_call(VALUE params, Scope *scope)
+{
+    params_require_3(params);
+    VALUE predicate = LixpCons_car(params);
+    VALUE then = LixpCons_car(LixpCons_cdr(params));
+    VALUE elsethen = LixpCons_car(LixpCons_cdr(LixpCons_cdr(params)));
+
+    VALUE result = LixpValue_evaluate(predicate, scope);
+    if (result->type == LixpType_cons && LixpCons_car(result) == NULL && LixpCons_cdr(result) == NULL)
+        return LixpValue_evaluate(elsethen, scope);
+    else
+        return LixpValue_evaluate(then, scope);
 }
