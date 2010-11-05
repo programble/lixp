@@ -246,6 +246,7 @@ VALUE LixpCons_evaluate(VALUE value, Scope *scope)
     case LixpType_symbol:
     case LixpType_cons:
         LixpCons_car(value) = LixpValue_evaluate(LixpCons_car(value), scope);
+        return LixpCons_evaluate(value, scope);
     case LixpType_builtin:
         return LixpBuiltin_call(LixpCons_car(value), LixpCons_cdr(value), scope);
     /* TODO: Come up with better names for these errors maybe */
