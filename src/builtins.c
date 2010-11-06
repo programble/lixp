@@ -157,6 +157,10 @@ VALUE LixpBuiltin_def_call(VALUE params, Scope *scope)
 {
     params_require_2(params);
 
+    /* Travel up the scope tree to the global scope */
+    while (scope->parent != NULL)
+        scope = scope->parent;
+
     VALUE symbol = LixpCons_car(params);
     VALUE value = LixpCons_car(LixpCons_cdr(params));
 
@@ -172,6 +176,10 @@ VALUE LixpBuiltin_def_call(VALUE params, Scope *scope)
 VALUE LixpBuiltin_undef_call(VALUE params, Scope *scope)
 {
     params_require_1(params);
+
+    /* Travel up the scope tree to the global scope */
+    while (scope->parent != NULL)
+        scope = scope->parent;
 
     VALUE symbol = LixpCons_car(params);
     if (symbol->type != LixpType_symbol)
