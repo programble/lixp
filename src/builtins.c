@@ -47,6 +47,8 @@ void bind_builtins(Scope *scope)
     Scope_set(scope, "=", LixpBuiltin_new(LixpBuiltin_eq));
     Scope_set(scope, "def", LixpBuiltin_new(LixpBuiltin_def));
     Scope_set(scope, "undef!", LixpBuiltin_new(LixpBuiltin_undef));
+    Scope_set(scope, "set!", LixpBuiltin_new(LixpBuiltin_set));
+    Scope_set(scope, "unset!", LixpBuiltin_new(LixpBuiltin_unset));
 }
 
 VALUE LixpBuiltin_call(VALUE builtin, VALUE params, Scope *scope)
@@ -73,6 +75,10 @@ VALUE LixpBuiltin_call(VALUE builtin, VALUE params, Scope *scope)
         return LixpBuiltin_def_call(params, scope);
     case LixpBuiltin_undef:
         return LixpBuiltin_undef_call(params, scope);
+    case LixpBuiltin_set:
+        return LixpBuiltin_set_call(params, scope);
+    case LixpBuiltin_unset:
+        return LixpBuiltin_unset_call(params, scope);
     default:
         return LixpError_new("unknown-builtin");
     }
@@ -192,7 +198,41 @@ VALUE LixpBuiltin_undef_call(VALUE params, Scope *scope)
         return LixpError_new("cannot-bind-to-non-symbol");
 
     VALUE value = Scope_get(scope, LixpSymbol_value(symbol));
-    if (value == NULL)
+    if (!value)
+        value = nil;
+    
+    Scope_del(scope, LixpSymbol_value(symbol));
+    return value;
+}
+
+VALUE LixpBuiltin_set_call(VALUE params, Scope *scope)
+{
+    params_require_2(params);
+
+    VALUE symbol = LixpCons_car(params);
+    VALUE value = LixpCons_car(LixpCons_cdr(params));
+
+    if (symbol->type != LixpType_symbol)
+        return LixpError_new("cannot-bind-to-non-symbol");
+
+    VALUE previous = Scope_get(scope, LixpSymbol_value(symbol));
+    if (!previous)
+        previous = nil;
+
+    Scope_set(scope, LixpSymbol_value(symbol), LixpValue_evaluate(value, scope));
+    return previous;
+}
+
+VALUE LixpBuiltin_unset_call(VALUE params, Scope *scope)
+{
+    params_require_1(params);
+
+    VALUE symbol = LixpCons_car(params);
+    if (symbol->type != LixpType_symbol)
+        return LixpError_new("cannot-bind-to-non-symbol");
+
+    VALUE value = Scope_get(scope, LixpSymbol_value(symbol));
+    if (!value)
         value = nil;
     
     Scope_del(scope, LixpSymbol_value(symbol));
