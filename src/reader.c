@@ -211,18 +211,18 @@ VALUE Reader_read_quote(Reader *reader)
     /* Skip ' */
     reader->index++;
 
+    if ((unsigned)reader->index >= strlen(reader->source))
+    {
+        reader->error = "Unexpected EOF";
+        return NULL;
+    }
+
     /* Read the quoted expression */
     VALUE expression = Reader_read(reader);
 
     /* Error if error */
     if (expression == NULL)
         return NULL;
-
-    if ((unsigned)reader->index >= strlen(reader->source))
-    {
-        reader->error = "Unexpected EOF";
-        return NULL;
-    }
 
     return LixpCons_new(LixpBuiltin_new(LixpBuiltin_quote), LixpCons_new(expression, LixpCons_new(NULL, NULL)));
 }
