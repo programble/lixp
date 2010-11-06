@@ -46,6 +46,7 @@ void bind_builtins(Scope *scope)
     Scope_set(scope, "cond", LixpBuiltin_new(LixpBuiltin_cond));
     Scope_set(scope, "=", LixpBuiltin_new(LixpBuiltin_eq));
     Scope_set(scope, "def", LixpBuiltin_new(LixpBuiltin_def));
+    Scope_set(scope, "undef!", LixpBuiltin_new(LixpBuiltin_undef));
 }
 
 VALUE LixpBuiltin_call(VALUE builtin, VALUE params, Scope *scope)
@@ -70,6 +71,8 @@ VALUE LixpBuiltin_call(VALUE builtin, VALUE params, Scope *scope)
         return LixpBuiltin_eq_call(params, scope);
     case LixpBuiltin_def:
         return LixpBuiltin_def_call(params, scope);
+    case LixpBuiltin_undef:
+        return LixpBuiltin_undef_call(params, scope);
     default:
         return LixpError_new("unknown-builtin");
     }
@@ -164,4 +167,20 @@ VALUE LixpBuiltin_def_call(VALUE params, Scope *scope)
 
     Scope_set(scope, LixpSymbol_value(symbol), LixpValue_evaluate(value, scope));
     return symbol;
+}
+
+VALUE LixpBuiltin_undef_call(VALUE params, Scope *scope)
+{
+    params_require_1(params);
+
+    VALUE symbol = LixpCons_car(params);
+    if (symbol->type != LixpType_symbol)
+        return LixpError_new("cannot-bind-to-non-symbol");
+
+    VALUE value = Scope_get(scope, LixpSymbol_value(symbol));
+    if (value == NULL)
+        value = nil;
+    
+    Scope_del(scope, LixpSymbol_value(symbol));
+    return value;
 }
