@@ -34,9 +34,12 @@ VALUE LixpBuiltin_cons_call(VALUE params, Scope *scope);
 /*VALUE LixpBuiltin_if_call(VALUE params, Scope *scope);*/
 VALUE LixpBuiltin_cond_call(VALUE params, Scope *scope);
 VALUE LixpBuiltin_eq_call(VALUE params, Scope *scope);
+
 VALUE LixpBuiltin_def_call(VALUE params, Scope *scope);
 VALUE LixpBuiltin_undef_call(VALUE params, Scope *scope);
 VALUE LixpBuiltin_set_call(VALUE params, Scope *scope);
 VALUE LixpBuiltin_unset_call(VALUE params, Scope *scope);
+
+VALUE LixpBuiltin_list_call(VALUE params, Scope *scope);
 
 #endif

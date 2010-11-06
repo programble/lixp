@@ -46,10 +46,13 @@ enum LixpBuiltins
     LixpBuiltin_cons,
     LixpBuiltin_cond,
     LixpBuiltin_eq,
+    
     LixpBuiltin_def,
     LixpBuiltin_undef,
     LixpBuiltin_set,
     LixpBuiltin_unset,
+    
+    LixpBuiltin_list,
 };
 
 struct LixpValue;

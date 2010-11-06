@@ -45,10 +45,13 @@ void bind_builtins(Scope *scope)
     Scope_set(scope, "cons", LixpBuiltin_new(LixpBuiltin_cons));
     Scope_set(scope, "cond", LixpBuiltin_new(LixpBuiltin_cond));
     Scope_set(scope, "=", LixpBuiltin_new(LixpBuiltin_eq));
+    
     Scope_set(scope, "def", LixpBuiltin_new(LixpBuiltin_def));
     Scope_set(scope, "undef!", LixpBuiltin_new(LixpBuiltin_undef));
     Scope_set(scope, "set!", LixpBuiltin_new(LixpBuiltin_set));
     Scope_set(scope, "unset!", LixpBuiltin_new(LixpBuiltin_unset));
+
+    Scope_set(scope, "list", LixpBuiltin_new(LixpBuiltin_list));
 }
 
 VALUE LixpBuiltin_call(VALUE builtin, VALUE params, Scope *scope)
@@ -79,6 +82,8 @@ VALUE LixpBuiltin_call(VALUE builtin, VALUE params, Scope *scope)
         return LixpBuiltin_set_call(params, scope);
     case LixpBuiltin_unset:
         return LixpBuiltin_unset_call(params, scope);
+    case LixpBuiltin_list:
+        return LixpBuiltin_list_call(params, scope);
     default:
         return LixpError_new("unknown-builtin");
     }
@@ -237,4 +242,20 @@ VALUE LixpBuiltin_unset_call(VALUE params, Scope *scope)
     
     Scope_del(scope, LixpSymbol_value(symbol));
     return value;
+}
+
+VALUE LixpBuiltin_list_call(VALUE params, Scope *scope)
+{
+    VALUE piter = params;
+    VALUE list = nil;
+    VALUE liter = list;
+    while (LixpCons_car(piter) != NULL && LixpCons_cdr(piter) != NULL)
+    {
+        LixpCons_car(liter) = LixpValue_evaluate(LixpCons_car(piter), scope);
+        piter = LixpCons_cdr(piter);
+        VALUE next = nil;
+        LixpCons_cdr(liter) = next;
+        liter = next;
+    }
+    return list;
 }
