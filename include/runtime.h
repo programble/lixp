@@ -96,6 +96,17 @@ VALUE LixpError_new(char *value);
 #define LixpBuiltin_value(x) x->value1.builtin_value
 #define LixpError_value(x) x->value1.str_value
 
+int LixpNumber_equals(VALUE a, VALUE b);
+int LixpCharacter_equals(VALUE a, VALUE b);
+int LixpString_equals(VALUE a, VALUE b);
+int LixpSymbol_equals(VALUE a, VALUE b);
+int LixpKeyword_equals(VALUE a, VALUE b);
+int LixpCons_equals(VALUE a, VALUE b);
+int LixpBuiltin_equals(VALUE a, VALUE b);
+int LixpError_equals(VALUE a, VALUE b);
+
+int LixpValue_equals(VALUE a, VALUE b);
+
 char *LixpNumber_inspect(VALUE value);
 char *LixpCharacter_inspect(VALUE value);
 char *LixpString_inspect(VALUE value);
