@@ -153,8 +153,8 @@ VALUE LixpBuiltin_eq_call(VALUE params, Scope *scope)
 {
     params_require_2(params);
 
-    VALUE a = LixpCons_car(params);
-    VALUE b = LixpCons_car(LixpCons_cdr(params));
+    VALUE a = LixpValue_evaluate(LixpCons_car(params), scope);
+    VALUE b = LixpValue_evaluate(LixpCons_car(LixpCons_cdr(params)), scope);
 
     if (a->type != b->type)
         return nil;
