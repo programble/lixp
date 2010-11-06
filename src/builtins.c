@@ -44,7 +44,10 @@ void bind_builtins(Scope *scope)
     Scope_set(scope, "cdr", LixpBuiltin_new(LixpBuiltin_cdr));
     Scope_set(scope, "cons", LixpBuiltin_new(LixpBuiltin_cons));
     Scope_set(scope, "cond", LixpBuiltin_new(LixpBuiltin_cond));
+    
     Scope_set(scope, "=", LixpBuiltin_new(LixpBuiltin_eq));
+    Scope_set(scope, ">", LixpBuiltin_new(LixpBuiltin_gt));
+    Scope_set(scope, "<", LixpBuiltin_new(LixpBuiltin_lt));
     
     Scope_set(scope, "def", LixpBuiltin_new(LixpBuiltin_def));
     Scope_set(scope, "undef!", LixpBuiltin_new(LixpBuiltin_undef));
@@ -86,6 +89,10 @@ VALUE LixpBuiltin_call(VALUE builtin, VALUE params, Scope *scope)
         return LixpBuiltin_cond_call(params, scope);
     case LixpBuiltin_eq:
         return LixpBuiltin_eq_call(params, scope);
+    case LixpBuiltin_gt:
+        return LixpBuiltin_gt_call(params, scope);
+    case LixpBuiltin_lt:
+        return LixpBuiltin_lt_call(params, scope);
     case LixpBuiltin_def:
         return LixpBuiltin_def_call(params, scope);
     case LixpBuiltin_undef:
@@ -194,6 +201,32 @@ VALUE LixpBuiltin_eq_call(VALUE params, Scope *scope)
     VALUE b = LixpValue_evaluate(LixpCons_car(LixpCons_cdr(params)), scope);
 
     return LixpValue_equals(a, b) ? t : nil;
+}
+
+VALUE LixpBuiltin_gt_call(VALUE params, Scope *scope)
+{
+    params_require_2(params);
+
+    VALUE a = LixpValue_evaluate(LixpCons_car(params), scope);
+    VALUE b = LixpValue_evaluate(LixpCons_car(LixpCons_cdr(params)), scope);
+
+    if (a->type != LixpType_number || b->type != LixpType_number)
+        return LixpError_new("unexpected-type");
+
+    return LixpNumber_value(a) > LixpNumber_value(b) ? t : nil;
+}
+
+VALUE LixpBuiltin_lt_call(VALUE params, Scope *scope)
+{
+    params_require_2(params);
+
+    VALUE a = LixpValue_evaluate(LixpCons_car(params), scope);
+    VALUE b = LixpValue_evaluate(LixpCons_car(LixpCons_cdr(params)), scope);
+
+    if (a->type != LixpType_number || b->type != LixpType_number)
+        return LixpError_new("unexpected-type");
+
+    return LixpNumber_value(a) < LixpNumber_value(b) ? t : nil;
 }
 
 VALUE LixpBuiltin_def_call(VALUE params, Scope *scope)
