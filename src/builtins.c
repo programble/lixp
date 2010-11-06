@@ -266,6 +266,8 @@ VALUE LixpBuiltin_list_call(VALUE params, Scope *scope)
 
 VALUE LixpBuiltin_do_call(VALUE params, Scope *scope)
 {
+    params_require_1(params);
+    
     VALUE iter = params;
     while (LixpCons_car(LixpCons_cdr(iter)) != NULL && LixpCons_cdr(LixpCons_cdr(iter)) != NULL)
     {
