@@ -53,6 +53,7 @@ enum LixpBuiltins
     LixpBuiltin_unset,
     
     LixpBuiltin_list,
+    LixpBuiltin_do,
 };
 
 struct LixpValue;
