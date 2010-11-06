@@ -55,6 +55,15 @@ void bind_builtins(Scope *scope)
     Scope_set(scope, "do", LixpBuiltin_new(LixpBuiltin_do));
     Scope_set(scope, "do-while-wearing-blue-underwear", LixpBuiltin_new(LixpBuiltin_do));
     Scope_set(scope, "let", LixpBuiltin_new(LixpBuiltin_let));
+
+    Scope_set(scope, "number?", LixpBuiltin_new(LixpBuiltin_numberp));
+    Scope_set(scope, "character?", LixpBuiltin_new(LixpBuiltin_characterp));
+    Scope_set(scope, "string?", LixpBuiltin_new(LixpBuiltin_stringp));
+    Scope_set(scope, "symbol?", LixpBuiltin_new(LixpBuiltin_symbolp));
+    Scope_set(scope, "keyword?", LixpBuiltin_new(LixpBuiltin_keywordp));
+    Scope_set(scope, "cons?", LixpBuiltin_new(LixpBuiltin_consp));
+    Scope_set(scope, "builtin?", LixpBuiltin_new(LixpBuiltin_builtinp));
+    Scope_set(scope, "error?", LixpBuiltin_new(LixpBuiltin_errorp));
 }
 
 VALUE LixpBuiltin_call(VALUE builtin, VALUE params, Scope *scope)
@@ -91,6 +100,22 @@ VALUE LixpBuiltin_call(VALUE builtin, VALUE params, Scope *scope)
         return LixpBuiltin_do_call(params, scope);
     case LixpBuiltin_let:
         return LixpBuiltin_let_call(params, scope);
+    case LixpBuiltin_numberp:
+        return LixpBuiltin_numberp_call(params, scope);
+    case LixpBuiltin_characterp:
+        return LixpBuiltin_characterp_call(params, scope);
+    case LixpBuiltin_stringp:
+        return LixpBuiltin_stringp_call(params, scope);
+    case LixpBuiltin_symbolp:
+        return LixpBuiltin_symbolp_call(params, scope);
+    case LixpBuiltin_keywordp:
+        return LixpBuiltin_keywordp_call(params, scope);
+    case LixpBuiltin_consp:
+        return LixpBuiltin_consp_call(params, scope);
+    case LixpBuiltin_builtinp:
+        return LixpBuiltin_builtinp_call(params, scope);
+    case LixpBuiltin_errorp:
+        return LixpBuiltin_errorp_call(params, scope);
     default:
         return LixpError_new("unknown-builtin");
     }
@@ -292,4 +317,60 @@ VALUE LixpBuiltin_let_call(VALUE params, Scope *scope)
     }
 
     return LixpBuiltin_do_call(LixpCons_cdr(params), local_scope);
+}
+
+VALUE LixpBuiltin_numberp_call(VALUE params, Scope *scope)
+{
+    params_require_1(params);
+
+    return LixpValue_evaluate(LixpCons_car(params), scope)->type == LixpType_number ? t : nil;
+}
+
+VALUE LixpBuiltin_characterp_call(VALUE params, Scope *scope)
+{
+    params_require_1(params);
+
+    return LixpValue_evaluate(LixpCons_car(params), scope)->type == LixpType_character ? t : nil;
+}
+
+VALUE LixpBuiltin_stringp_call(VALUE params, Scope *scope)
+{
+    params_require_1(params);
+
+    return LixpValue_evaluate(LixpCons_car(params), scope)->type == LixpType_string ? t : nil;
+}
+
+VALUE LixpBuiltin_symbolp_call(VALUE params, Scope *scope)
+{
+    params_require_1(params);
+
+    return LixpValue_evaluate(LixpCons_car(params), scope)->type == LixpType_symbol ? t : nil;
+}
+
+VALUE LixpBuiltin_keywordp_call(VALUE params, Scope *scope)
+{
+    params_require_1(params);
+
+    return LixpValue_evaluate(LixpCons_car(params), scope)->type == LixpType_keyword ? t : nil;
+}
+
+VALUE LixpBuiltin_consp_call(VALUE params, Scope *scope)
+{
+    params_require_1(params);
+
+    return LixpValue_evaluate(LixpCons_car(params), scope)->type == LixpType_cons ? t : nil;
+}
+
+VALUE LixpBuiltin_builtinp_call(VALUE params, Scope *scope)
+{
+    params_require_1(params);
+
+    return LixpValue_evaluate(LixpCons_car(params), scope)->type == LixpType_builtin ? t : nil;
+}
+
+VALUE LixpBuiltin_errorp_call(VALUE params, Scope *scope)
+{
+    params_require_1(params);
+
+    return LixpValue_evaluate(LixpCons_car(params), scope)->type == LixpType_error ? t : nil;
 }

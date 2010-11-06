@@ -55,6 +55,15 @@ enum LixpBuiltins
     LixpBuiltin_list,
     LixpBuiltin_do,
     LixpBuiltin_let,
+
+    LixpBuiltin_numberp,
+    LixpBuiltin_characterp,
+    LixpBuiltin_stringp,
+    LixpBuiltin_symbolp,
+    LixpBuiltin_keywordp,
+    LixpBuiltin_consp,
+    LixpBuiltin_builtinp,
+    LixpBuiltin_errorp,
 };
 
 struct LixpValue;

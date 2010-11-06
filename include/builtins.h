@@ -44,4 +44,14 @@ VALUE LixpBuiltin_list_call(VALUE params, Scope *scope);
 VALUE LixpBuiltin_do_call(VALUE params, Scope *scope);
 VALUE LixpBuiltin_let_call(VALUE params, Scope *scope);
 
+VALUE LixpBuiltin_numberp_call(VALUE params, Scope *scope);
+VALUE LixpBuiltin_characterp_call(VALUE params, Scope *scope);
+VALUE LixpBuiltin_stringp_call(VALUE params, Scope *scope);
+VALUE LixpBuiltin_symbolp_call(VALUE params, Scope *scope);
+VALUE LixpBuiltin_keywordp_call(VALUE params, Scope *scope);
+VALUE LixpBuiltin_consp_call(VALUE params, Scope *scope);
+VALUE LixpBuiltin_builtinp_call(VALUE params, Scope *scope);
+VALUE LixpBuiltin_errorp_call(VALUE params, Scope *scope);
+
+
 #endif
