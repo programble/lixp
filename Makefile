@@ -37,6 +37,8 @@ OBJECTS:=$(SOURCES:%.c=%.o)
 
 OUTPUT=lixp
 
+INSTALL_PREFIX=/usr/local
+
 all: $(SOURCES) $(OUTPUT)
 
 $(OUTPUT): include/version.h $(OBJECTS)
@@ -52,6 +54,13 @@ include/version.h: $(SOURCES) Makefile
 	echo "#define VERSION \"$(shell git tag | cut -c2-).r$(shell git rev-parse HEAD | cut -c-8)\"" > $@; \
 	fi
 	@echo "#define COMPILER \"$(CC) \" __VERSION__" >> $@
+
+install: $(OUTPUT)
+	install -g root -o root $(OUTPUT) $(INSTALL_PREFIX)/bin
+
+uninstall: remove
+remove:
+	rm -f $(INSTALL_PREFIX)/bin/$(OUTPUT)
 
 no-readline:
 	@$(MAKE) $(MFLAGS) DEFINES="$(DEFINES:-DREADLINE=)" LIBS="$(LIBS:-lreadline=)"
