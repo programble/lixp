@@ -54,6 +54,7 @@ void bind_builtins(Scope *scope)
     Scope_set(scope, "list", LixpBuiltin_new(LixpBuiltin_list));
     Scope_set(scope, "do", LixpBuiltin_new(LixpBuiltin_do));
     Scope_set(scope, "do-while-wearing-blue-underwear", LixpBuiltin_new(LixpBuiltin_do));
+    Scope_set(scope, "let", LixpBuiltin_new(LixpBuiltin_let));
 }
 
 VALUE LixpBuiltin_call(VALUE builtin, VALUE params, Scope *scope)
@@ -88,6 +89,8 @@ VALUE LixpBuiltin_call(VALUE builtin, VALUE params, Scope *scope)
         return LixpBuiltin_list_call(params, scope);
     case LixpBuiltin_do:
         return LixpBuiltin_do_call(params, scope);
+    case LixpBuiltin_let:
+        return LixpBuiltin_let_call(params, scope);
     default:
         return LixpError_new("unknown-builtin");
     }
@@ -275,4 +278,24 @@ VALUE LixpBuiltin_do_call(VALUE params, Scope *scope)
         iter = LixpCons_cdr(iter);
     }
     return LixpValue_evaluate(LixpCons_car(iter), scope);
+}
+
+VALUE LixpBuiltin_let_call(VALUE params, Scope *scope)
+{
+    params_require_2(params);
+    
+    VALUE bindings = LixpCons_car(params);
+
+    Scope *local_scope = Scope_new(scope);
+
+    VALUE iter = bindings;
+    while (LixpCons_car(iter) != NULL && LixpCons_cdr(iter) != NULL)
+    {
+        VALUE pair = LixpCons_car(iter);
+        params_require_2(pair);
+        LixpBuiltin_set_call(pair, local_scope);
+        iter = LixpCons_cdr(iter);
+    }
+
+    return LixpBuiltin_do_call(LixpCons_cdr(params), local_scope);
 }

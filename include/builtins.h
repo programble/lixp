@@ -42,5 +42,6 @@ VALUE LixpBuiltin_unset_call(VALUE params, Scope *scope);
 
 VALUE LixpBuiltin_list_call(VALUE params, Scope *scope);
 VALUE LixpBuiltin_do_call(VALUE params, Scope *scope);
+VALUE LixpBuiltin_let_call(VALUE params, Scope *scope);
 
 #endif
