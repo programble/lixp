@@ -97,6 +97,9 @@ VALUE LixpBuiltin_car_call(VALUE params, Scope *scope)
     VALUE list = LixpValue_evaluate(LixpCons_car(params), scope);
     if (list->type != LixpType_cons)
         return LixpError_new("unexpected-type"); /* TODO: Better error */
+    /* (car nil) ;-> nil */
+    if (LixpCons_car(list) == NULL && LixpCons_cdr(list) == NULL)
+        return list;
     return LixpCons_car(list);
 }
 
@@ -106,6 +109,9 @@ VALUE LixpBuiltin_cdr_call(VALUE params, Scope *scope)
     VALUE list = LixpValue_evaluate(LixpCons_car(params), scope);
     if (list->type != LixpType_cons)
         return LixpError_new("unexpected-type"); /* TODO: Better error */
+    /* (cdr nil) ;-> nil */
+    if (LixpCons_car(list) == NULL && LixpCons_cdr(list) == NULL)
+        return list;
     return LixpCons_cdr(list);
 }
 
