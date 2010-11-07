@@ -139,6 +139,8 @@ VALUE LixpBuiltin_call(VALUE builtin, VALUE params, Scope *scope)
         return LixpBuiltin_mul_call(params, scope);
     case LixpBuiltin_div:
         return LixpBuiltin_div_call(params, scope);
+    case LixpBuiltin_mod:
+        return LixpBuiltin_mod_call(params, scope);
     default:
         return LixpError_new("unknown-builtin");
     }
@@ -500,4 +502,17 @@ VALUE LixpBuiltin_div_call(VALUE params, Scope *scope)
         iter = LixpCons_cdr(iter);
     }
     return LixpNumber_new(acc);
+}
+
+VALUE LixpBuiltin_mod_call(VALUE params, Scope *scope)
+{
+    params_require_2(params);
+
+    VALUE a = LixpValue_evaluate(LixpCons_car(params), scope);
+    VALUE b = LixpValue_evaluate(LixpCons_car(LixpCons_cdr(params)), scope);
+
+    if (a->type != LixpType_number || b->type != LixpType_number)
+        return LixpError_new("unexpected-type");
+
+    return LixpNumber_new(LixpNumber_value(a) % LixpNumber_value(b));
 }
