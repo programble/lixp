@@ -489,6 +489,8 @@ VALUE LixpBuiltin_div_call(VALUE params, Scope *scope)
         VALUE v = LixpValue_evaluate(LixpCons_car(params), scope);
         if (v->type != LixpType_number)
             return LixpError_new("unexpected-type");
+        if (LixpNumber_value(v) == 0)
+            return LixpError_new("zero-division");
         return LixpNumber_new(1 / LixpNumber_value(v));
     }
     int acc = LixpNumber_value(LixpValue_evaluate(LixpCons_car(params), scope));
@@ -498,6 +500,8 @@ VALUE LixpBuiltin_div_call(VALUE params, Scope *scope)
         VALUE v = LixpValue_evaluate(LixpCons_car(iter), scope);
         if (v->type != LixpType_number)
             return LixpError_new("unexpected-type");
+        if (LixpNumber_value(v) == 0)
+            return LixpError_new("zero-division");
         acc /= LixpNumber_value(v);
         iter = LixpCons_cdr(iter);
     }
