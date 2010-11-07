@@ -517,6 +517,8 @@ VALUE LixpBuiltin_mod_call(VALUE params, Scope *scope)
 
     if (a->type != LixpType_number || b->type != LixpType_number)
         return LixpError_new("unexpected-type");
+    if (LixpNumber_value(b) == 0)
+            return LixpError_new("zero-division");
 
     return LixpNumber_new(LixpNumber_value(a) % LixpNumber_value(b));
 }
