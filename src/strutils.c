@@ -35,7 +35,9 @@ int asprintf(char **ret, const char *format, ...)
     va_list ap;
     va_start(ap, format);
     int length = vsnprintf(NULL, 0, format, ap);
+    va_end(ap);
     char *s = GC_MALLOC_ATOMIC(length + 1);
+    va_start(ap, format);
     vsnprintf(s, length + 1, format, ap);
     va_end(ap);
     *ret = s;
