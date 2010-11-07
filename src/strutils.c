@@ -36,7 +36,7 @@ int asprintf(char **ret, const char *format, ...)
     va_list ap;
     va_start(ap, format);
     int length = vsnprintf(s, 1, format, ap);
-    s = GC_REALLOC(s, length + 1);
+    s = GC_REALLOC(s, length + 2);
     vsnprintf(s, length + 1, format, ap);
     va_end(ap);
     *ret = s;
