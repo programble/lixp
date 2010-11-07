@@ -17,9 +17,31 @@
 
 CC=clang
 
-GCPREFIX=/usr
+# Find OS and Arch (borrowed from rock)
+OS:=$(shell uname -s)
+MACHINE:=$(shell uname -m)
+ifeq ($(OS), Linux)
+    ARCH=linux
+else ifeq ($(OS), Darwin)
+    ARCH=osx
+else ifeq ($(OS), CYGWIN_NT-5.1)
+    ARCH=win
+else ifeq ($(OS), MINGW32_NT-5.1)
+    ARCH=win
+else
+    $(shell echo "OS ${OS} doesn't have pre-built Boehm GC packages. Please compile and install your own and recompile with GC_PATH=-lgc")
+endif
+ifneq ($(ARCH), osx)
+  ifeq ($(MACHINE), x86_64)
+    ARCH:=$(ARCH)64
+  else
+    ARCH:=$(ARCH)32
+  endif
+endif
 
-INCLUDES=-Iinclude/ -I$(GCPREFIX)/include
+GC_PATH=libs/$(ARCH)/libgc.a
+
+INCLUDES=-Iinclude/ -Ilibs/headers/
 WARNINGS=-Wall -Wextra -Wno-unused-parameter
 DEFINES=-DREADLINE
 FLAGS=-std=c99
@@ -28,7 +50,7 @@ CFLAGS=$(FLAGS) $(DEFINES) $(WARNINGS) $(INCLUDES)
 DFLAGS=-ggdb -O0
 DDEFINES=-DDEBUG
 
-LIBS=-lreadline -lpthread $(GCPREFIX)/lib/libgc.a
+LIBS=-lreadline -lm -lpthread $(GC_PATH)
 LDFLAGS=$(LIBS)
 
 SOURCES:=$(wildcard src/*.c)
