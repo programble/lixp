@@ -8,6 +8,14 @@ Dependencies
 
  * [GNU Readline](http://tiswww.case.edu/php/chet/readline/rltop.html) (Optional: `make no-readline`)
 
+System Requirements
+-------------------
+
+Lixp has been tested on:
+
+ * Linux 32-bit
+ * Linux 64-bit
+
 Building
 --------
 
