@@ -67,6 +67,12 @@ enum LixpBuiltins
     LixpBuiltin_consp,
     LixpBuiltin_builtinp,
     LixpBuiltin_errorp,
+
+    LixpBuiltin_add,
+    LixpBuiltin_sub,
+    LixpBuiltin_mul,
+    LixpBuiltin_div,
+    LixpBuiltin_mod,
 };
 
 struct LixpValue;

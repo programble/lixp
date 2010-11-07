@@ -56,5 +56,10 @@ VALUE LixpBuiltin_consp_call(VALUE params, Scope *scope);
 VALUE LixpBuiltin_builtinp_call(VALUE params, Scope *scope);
 VALUE LixpBuiltin_errorp_call(VALUE params, Scope *scope);
 
+VALUE LixpBuiltin_add_call(VALUE params, Scope *scope);
+VALUE LixpBuiltin_sub_call(VALUE params, Scope *scope);
+VALUE LixpBuiltin_mul_call(VALUE params, Scope *scope);
+VALUE LixpBuiltin_div_call(VALUE params, Scope *scope);
+VALUE LixpBuiltin_mod_call(VALUE params, Scope *scope);
 
 #endif

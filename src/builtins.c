@@ -30,6 +30,8 @@
 #define t LixpSymbol_new("t")
 #define nil LixpCons_new(NULL, NULL)
 
+#define nilp(x) (LixpCons_car(x) == NULL && LixpCons_cdr(x) == NULL)
+
 void bind_builtins(Scope *scope)
 {
     /* Standard symbols */
@@ -67,6 +69,12 @@ void bind_builtins(Scope *scope)
     Scope_set(scope, "cons?", LixpBuiltin_new(LixpBuiltin_consp));
     Scope_set(scope, "builtin?", LixpBuiltin_new(LixpBuiltin_builtinp));
     Scope_set(scope, "error?", LixpBuiltin_new(LixpBuiltin_errorp));
+
+    Scope_set(scope, "+", LixpBuiltin_new(LixpBuiltin_add));
+    Scope_set(scope, "-", LixpBuiltin_new(LixpBuiltin_sub));
+    Scope_set(scope, "*", LixpBuiltin_new(LixpBuiltin_mul));
+    Scope_set(scope, "/", LixpBuiltin_new(LixpBuiltin_div));
+    Scope_set(scope, "%", LixpBuiltin_new(LixpBuiltin_mod));
 }
 
 VALUE LixpBuiltin_call(VALUE builtin, VALUE params, Scope *scope)
@@ -123,6 +131,8 @@ VALUE LixpBuiltin_call(VALUE builtin, VALUE params, Scope *scope)
         return LixpBuiltin_builtinp_call(params, scope);
     case LixpBuiltin_errorp:
         return LixpBuiltin_errorp_call(params, scope);
+    case LixpBuiltin_add:
+        return LixpBuiltin_add_call(params, scope);
     default:
         return LixpError_new("unknown-builtin");
     }
@@ -148,7 +158,7 @@ VALUE LixpBuiltin_car_call(VALUE params, Scope *scope)
     if (list->type != LixpType_cons)
         return LixpError_new("unexpected-type"); /* TODO: Better error */
     /* (car nil) ;-> nil */
-    if (LixpCons_car(list) == NULL && LixpCons_cdr(list) == NULL)
+    if (nilp(list))
         return list;
     return LixpCons_car(list);
 }
@@ -160,7 +170,7 @@ VALUE LixpBuiltin_cdr_call(VALUE params, Scope *scope)
     if (list->type != LixpType_cons)
         return LixpError_new("unexpected-type"); /* TODO: Better error */
     /* (cdr nil) ;-> nil */
-    if (LixpCons_car(list) == NULL && LixpCons_cdr(list) == NULL)
+    if (nilp(list))
         return list;
     return LixpCons_cdr(list);
 }
@@ -177,7 +187,7 @@ VALUE LixpBuiltin_cond_call(VALUE params, Scope *scope)
         return nil;
 
     VALUE iter = params;
-    while (LixpCons_car(iter) != NULL && LixpCons_cdr(iter) != NULL)
+    while (!nilp(iter))
     {
         VALUE pair = LixpCons_car(iter);
         params_require_1(pair);
@@ -308,7 +318,7 @@ VALUE LixpBuiltin_list_call(VALUE params, Scope *scope)
     VALUE piter = params;
     VALUE list = nil;
     VALUE liter = list;
-    while (LixpCons_car(piter) != NULL && LixpCons_cdr(piter) != NULL)
+    while (!nilp(piter))
     {
         LixpCons_car(liter) = LixpValue_evaluate(LixpCons_car(piter), scope);
         piter = LixpCons_cdr(piter);
@@ -324,7 +334,7 @@ VALUE LixpBuiltin_do_call(VALUE params, Scope *scope)
     params_require_1(params);
     
     VALUE iter = params;
-    while (LixpCons_car(LixpCons_cdr(iter)) != NULL && LixpCons_cdr(LixpCons_cdr(iter)) != NULL)
+    while (!nilp(iter))
     {
         LixpValue_evaluate(LixpCons_car(iter), scope);
         iter = LixpCons_cdr(iter);
@@ -341,7 +351,7 @@ VALUE LixpBuiltin_let_call(VALUE params, Scope *scope)
     Scope *local_scope = Scope_new(scope);
 
     VALUE iter = bindings;
-    while (LixpCons_car(iter) != NULL && LixpCons_cdr(iter) != NULL)
+    while (!nilp(iter))
     {
         VALUE pair = LixpCons_car(iter);
         params_require_2(pair);
@@ -406,4 +416,19 @@ VALUE LixpBuiltin_errorp_call(VALUE params, Scope *scope)
     params_require_1(params);
 
     return LixpValue_evaluate(LixpCons_car(params), scope)->type == LixpType_error ? t : nil;
+}
+
+VALUE LixpBuiltin_add_call(VALUE params, Scope *scope)
+{
+    int acc = 0;
+    VALUE iter = params;
+    while (!nilp(iter))
+    {
+        VALUE v = LixpCons_car(iter);
+        if (v->type != LixpType_number)
+            return LixpError_new("unexpected-type");
+        acc += LixpNumber_value(v);
+        iter = LixpCons_cdr(iter);
+    }
+    return LixpNumber_new(acc);
 }
