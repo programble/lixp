@@ -32,10 +32,10 @@ int str_has_char(const char *str, char c)
 
 int asprintf(char **ret, const char *format, ...)
 {
-    char *s = GC_MALLOC_ATOMIC(3);
+    char *s = GC_MALLOC_ATOMIC(1);
     va_list ap;
     va_start(ap, format);
-    int length = vsnprintf(s, 3, format, ap);
+    int length = vsnprintf(s, 1, format, ap);
     s = GC_REALLOC(s, length + 1);
     vsnprintf(s, length, format, ap);
     va_end(ap);
