@@ -28,9 +28,8 @@ CFLAGS=$(FLAGS) $(DEFINES) $(WARNINGS) $(INCLUDES)
 DFLAGS=-ggdb -O0
 DDEFINES=-DDEBUG
 
-LIBPATHS=-L$(GCPREFIX)/lib
-LIBS=-lreadline -lgc
-LDFLAGS=$(LIBPATHS) $(LIBS)
+LIBS=-lreadline -lpthread $(GCPREFIX)/lib/libgc.a
+LDFLAGS=$(LIBS)
 
 SOURCES:=$(wildcard src/*.c)
 OBJECTS:=$(SOURCES:%.c=%.o)
@@ -42,7 +41,7 @@ INSTALL_PREFIX=/usr/local
 all: $(SOURCES) $(OUTPUT)
 
 $(OUTPUT): include/version.h $(OBJECTS)
-	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+	$(CC) $(OBJECTS) $(LDFLAGS) -o $@
 
 %.o: %.c
 	$(CC) $(CFLAGS) -o $@ -c $<
