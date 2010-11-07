@@ -144,6 +144,12 @@ VALUE Reader_read_number(Reader *reader)
     /* TODO: CLean up */
     /*char *ns = Reader_read_until(reader, WHITESPACE ")");*/
     char *ns = Reader_read_while(reader, "-0123456789");
+    /* HACK: Read - as symbol */
+    if (strcmp(ns, "-") == 0)
+    {
+        reader->index--;
+        return Reader_read_symbol(reader);
+    }
     int n, r;
     r = sscanf(ns, "%d", &n);
     /* TODO: Handle errors better somehow? */
