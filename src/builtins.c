@@ -342,7 +342,7 @@ VALUE LixpBuiltin_do_call(VALUE params, Scope *scope)
     params_require_1(params);
     
     VALUE iter = params;
-    while (!nilp(iter))
+    while (!nilp(LixpCons_cdr(iter)))
     {
         LixpValue_evaluate(LixpCons_car(iter), scope);
         iter = LixpCons_cdr(iter);
