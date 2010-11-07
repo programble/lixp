@@ -6,6 +6,7 @@ Some kind of Lisp in C.
 Dependencies
 ------------
 
+ * [Boehm GC](http://www.hpl.hp.com/personal/Hans_Boehm/gc/) (Pre-built packages are provided for Linux32, Linux64, Haiku32, Win32 and OSX)
  * [GNU Readline](http://tiswww.case.edu/php/chet/readline/rltop.html) (Optional: `make no-readline`)
 
 System Requirements
