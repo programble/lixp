@@ -452,7 +452,7 @@ VALUE LixpBuiltin_sub_call(VALUE params, Scope *scope)
             return LixpError_new("unexpected-type");
         return LixpNumber_new(LixpNumber_value(v) * -1);
     }
-    int acc = LixpNumber_value(LixpCons_car(params));
+    int acc = LixpNumber_value(LixpValue_evaluate(LixpCons_car(params), scope));
     VALUE iter = LixpCons_cdr(params);
     while (!nilp(iter))
     {
@@ -491,7 +491,7 @@ VALUE LixpBuiltin_div_call(VALUE params, Scope *scope)
             return LixpError_new("unexpected-type");
         return LixpNumber_new(1 / LixpNumber_value(v));
     }
-    int acc = LixpNumber_value(LixpCons_car(params));
+    int acc = LixpNumber_value(LixpValue_evaluate(LixpCons_car(params), scope));
     VALUE iter = LixpCons_cdr(params);
     while (!nilp(iter))
     {
