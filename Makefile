@@ -101,7 +101,7 @@ todo:
 	@grep -rInso 'TODO: \([^*]\+\)' src/ include/
 
 sloc:
-	@sloccount ./ | grep "(SLOC)"
+	@sloccount src/ include/ | grep "(SLOC)"
 
 size:
 	@du -h $(OUTPUT)
