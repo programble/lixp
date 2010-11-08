@@ -16,6 +16,14 @@ Or if lambda bodies are multiple expressions,
       ((0) 1)
       ((n) (* n (factorial (- n 1)))))
 
+Currying would be cool too
+--------------------------
+
+    (defn add (x y)
+      (+ x y))
+    (def add2 (add 2))
+    (add2 5) ;-> 7
+
 Lazy lists would be nice wouldn't they
 --------------------------------------
 
