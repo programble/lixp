@@ -10,6 +10,11 @@ Multiple lambda definitions with haskell-like matching
       (0) 1
       (n) (* n (factorial (- n 1))))
 
+    (defn lottery
+      ; Chosen by fair dice roll
+      (4) "A WINNER IS YOU!"
+      (_) "You lose.")
+
 Or if lambda bodies are multiple expressions,
 
     (defn factorial
