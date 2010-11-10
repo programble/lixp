@@ -130,7 +130,7 @@ char *LixpFn_inspect(VALUE value)
 {
     /* TODO: Better inspect */
     char *str;
-    asprintf(&str, "#<fn:%#08x:%#08x@%#08x>", (unsigned int)LixpFn_arglist(value), (unsigned int)LixpFn_body(value), (unsigned int)value);
+    asprintf(&str, "#<LixpFn:%#08x:%#08x@%#08x>", (unsigned int)LixpFn_arglist(value), (unsigned int)LixpFn_body(value), (unsigned int)value);
     return str;
 }
 
