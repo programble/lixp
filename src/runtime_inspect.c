@@ -126,6 +126,14 @@ char *LixpError_inspect(VALUE value)
     return str;
 }
 
+char *LixpFn_inspect(VALUE value)
+{
+    /* TODO: Better inspect */
+    char *str;
+    asprintf(&str, "#<fn:%#08x:%#08x@%#08x>", (unsigned int)LixpFn_arglist(value), (unsigned int)LixpFn_body(value), (unsigned int)value);
+    return str;
+}
+
 char *LixpValue_inspect(VALUE value)
 {
     switch (value->type)
@@ -146,6 +154,8 @@ char *LixpValue_inspect(VALUE value)
         return LixpBuiltin_inspect(value);
     case LixpType_error:
         return LixpError_inspect(value);
+    case LixpType_fn:
+        return LixpFn_inspect(value);
     default:
         return NULL;
     }
