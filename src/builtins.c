@@ -46,6 +46,8 @@ void bind_builtins(Scope *scope)
     Scope_set(scope, "cdr", LixpBuiltin_new(LixpBuiltin_cdr));
     Scope_set(scope, "cons", LixpBuiltin_new(LixpBuiltin_cons));
     Scope_set(scope, "cond", LixpBuiltin_new(LixpBuiltin_cond));
+
+    Scope_set(scope, "fn", LixpBuiltin_new(LixpBuiltin_fn));
     
     Scope_set(scope, "=", LixpBuiltin_new(LixpBuiltin_eq));
     Scope_set(scope, ">", LixpBuiltin_new(LixpBuiltin_gt));
@@ -95,6 +97,8 @@ VALUE LixpBuiltin_call(VALUE builtin, VALUE params, Scope *scope)
           return LixpBuiltin_if_call(params, scope);*/
     case LixpBuiltin_cond:
         return LixpBuiltin_cond_call(params, scope);
+    case LixpBuiltin_fn:
+        return LixpBuiltin_fn_call(params, scope);
     case LixpBuiltin_eq:
         return LixpBuiltin_eq_call(params, scope);
     case LixpBuiltin_gt:
@@ -209,6 +213,14 @@ VALUE LixpBuiltin_cond_call(VALUE params, Scope *scope)
         iter = LixpCons_cdr(iter);
     }
     return nil;
+}
+
+VALUE LixpBuiltin_fn_call(VALUE params, Scope *scope)
+{
+    params_require_2(params);
+    if (LixpCons_car(params)->type != LixpType_cons)
+        return LixpError_new("unexpected-type");
+    return LixpFn_new(LixpCons_car(params), LixpCons_car(LixpCons_cdr(params)));
 }
 
 VALUE LixpBuiltin_eq_call(VALUE params, Scope *scope)

@@ -45,6 +45,8 @@ enum LixpBuiltins
     LixpBuiltin_cdr,
     LixpBuiltin_cons,
     LixpBuiltin_cond,
+
+    LixpBuiltin_fn,
     
     LixpBuiltin_eq,
     LixpBuiltin_gt,
