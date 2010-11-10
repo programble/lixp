@@ -85,3 +85,12 @@ VALUE LixpError_new(char *value)
     LixpError_value(new) = value;
     return new;
 }
+
+VALUE LixpFn_new(VALUE arglist, VALUE body)
+{
+    VALUE new = GC_MALLOC(sizeof(LixpValue));
+    new->type = LixpType_fn;
+    LixpFn_arglist(new) = arglist;
+    LixpFn_body(new) = body;
+    return new;
+}
