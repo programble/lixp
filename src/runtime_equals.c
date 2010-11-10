@@ -62,6 +62,12 @@ int LixpError_equals(VALUE a, VALUE b)
     return LixpString_equals(a, b);
 }
 
+int LixpFn_equals(VALUE a, VALUE b)
+{
+    /* TODO: Should fns be equal only if they are the exact same fn or not? */
+    return a == b;
+}
+
 int LixpValue_equals(VALUE a, VALUE b)
 {
     if (a->type != b->type)
@@ -84,6 +90,8 @@ int LixpValue_equals(VALUE a, VALUE b)
         return LixpBuiltin_equals(a, b);
     case LixpType_error:
         return LixpError_equals(a, b);
+    case LixpType_fn:
+        return LixpFn_equals(a, b);
     }
     return 0;
 }
