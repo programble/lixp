@@ -38,7 +38,7 @@ VALUE LixpFn_call(VALUE value, VALUE params, Scope *scope)
     {
         VALUE bind = LixpCons_car(aiter);
         VALUE value = LixpCons_car(viter);
-        Scope_set(fn_scope, LixpSymbol_value(bind), value);
+        Scope_set(fn_scope, LixpSymbol_value(bind), LixpValue_evaluate(value, scope));
         aiter = LixpCons_cdr(aiter);
         viter = LixpCons_cdr(viter);
     }
