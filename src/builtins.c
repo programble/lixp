@@ -197,7 +197,7 @@ VALUE LixpBuiltin_cond_call(VALUE params, Scope *scope)
     if (LixpCons_nil(params))
         return nil;
 
-    for (VALUE iter = params; !LixpCons_nil(iter); iter = LixpCons_cdr(iter))
+    LixpCons_each(params, iter)
     {
         VALUE pair = LixpCons_car(iter);
         if (LixpCons_length(pair) < 1)
@@ -343,7 +343,7 @@ VALUE LixpBuiltin_list_call(VALUE params, Scope *scope)
 {
     VALUE list = nil;
     VALUE liter = list;
-    for (VALUE piter = params; !LixpCons_nil(piter); piter = LixpCons_cdr(piter))
+    LixpCons_each(params, piter)
     {
         LixpCons_car(liter) = LixpValue_evaluate(LixpCons_car(piter), scope);
         VALUE next = nil;
@@ -376,7 +376,7 @@ VALUE LixpBuiltin_let_call(VALUE params, Scope *scope)
 
     Scope *local_scope = Scope_new(scope);
 
-    for (VALUE iter = bindings; !LixpCons_nil(iter); iter = LixpCons_cdr(iter))
+    LixpCons_each(bindings, iter)
     {
         VALUE pair = LixpCons_car(iter);
         if (LixpCons_length(pair) != 2)
@@ -454,7 +454,7 @@ VALUE LixpBuiltin_errorp_call(VALUE params, Scope *scope)
 VALUE LixpBuiltin_add_call(VALUE params, Scope *scope)
 {
     int acc = 0;
-    for (VALUE iter = params; !LixpCons_nil(iter); iter = LixpCons_cdr(iter))
+    LixpCons_each(params, iter)
     {
         VALUE v = LixpValue_evaluate(LixpCons_car(iter), scope);
         if (v->type != LixpType_number)
@@ -476,7 +476,7 @@ VALUE LixpBuiltin_sub_call(VALUE params, Scope *scope)
         return LixpNumber_new(LixpNumber_value(v) * -1);
     }
     int acc = LixpNumber_value(LixpValue_evaluate(LixpCons_car(params), scope));
-    for (VALUE iter = LixpCons_cdr(params); !LixpCons_nil(iter); iter = LixpCons_cdr(iter))
+    LixpCons_each(LixpCons_cdr(params), iter)
     {
         VALUE v = LixpValue_evaluate(LixpCons_car(iter), scope);
         if (v->type != LixpType_number)
@@ -489,7 +489,7 @@ VALUE LixpBuiltin_sub_call(VALUE params, Scope *scope)
 VALUE LixpBuiltin_mul_call(VALUE params, Scope *scope)
 {
     int acc = 1;
-    for (VALUE iter = params; !LixpCons_nil(iter); iter = LixpCons_cdr(iter))
+    LixpCons_each(params, iter)
     {
         VALUE v = LixpValue_evaluate(LixpCons_car(iter), scope);
         if (v->type != LixpType_number)
@@ -513,7 +513,7 @@ VALUE LixpBuiltin_div_call(VALUE params, Scope *scope)
         return LixpNumber_new(1 / LixpNumber_value(v));
     }
     int acc = LixpNumber_value(LixpValue_evaluate(LixpCons_car(params), scope));
-    for (VALUE iter = LixpCons_cdr(params); !LixpCons_nil(iter); iter = LixpCons_cdr(iter))
+    LixpCons_each(LixpCons_cdr(params), iter)
     {
         VALUE v = LixpValue_evaluate(LixpCons_car(iter), scope);
         if (v->type != LixpType_number)
