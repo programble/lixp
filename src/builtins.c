@@ -222,7 +222,8 @@ VALUE LixpBuiltin_cond_call(VALUE params, Scope *scope)
 
 VALUE LixpBuiltin_fn_call(VALUE params, Scope *scope)
 {
-    params_require_2(params);
+    if (LixpCons_length(params) != 2)
+            return LixpError_new("wrong-number-of-arguments");
     if (LixpCons_car(params)->type != LixpType_cons)
         return LixpError_new("unexpected-type");
     return LixpFn_new(LixpCons_car(params), LixpCons_car(LixpCons_cdr(params)));
@@ -230,7 +231,8 @@ VALUE LixpBuiltin_fn_call(VALUE params, Scope *scope)
 
 VALUE LixpBuiltin_eq_call(VALUE params, Scope *scope)
 {
-    params_require_2(params);
+    if (LixpCons_length(params) != 2)
+        return LixpError_new("wrong-number-of-arguments");
 
     VALUE a = LixpValue_evaluate(LixpCons_car(params), scope);
     VALUE b = LixpValue_evaluate(LixpCons_car(LixpCons_cdr(params)), scope);
@@ -240,7 +242,8 @@ VALUE LixpBuiltin_eq_call(VALUE params, Scope *scope)
 
 VALUE LixpBuiltin_gt_call(VALUE params, Scope *scope)
 {
-    params_require_2(params);
+    if (LixpCons_length(params) != 2)
+        return LixpError_new("wrong-number-of-arguments");
 
     VALUE a = LixpValue_evaluate(LixpCons_car(params), scope);
     VALUE b = LixpValue_evaluate(LixpCons_car(LixpCons_cdr(params)), scope);
@@ -253,7 +256,8 @@ VALUE LixpBuiltin_gt_call(VALUE params, Scope *scope)
 
 VALUE LixpBuiltin_lt_call(VALUE params, Scope *scope)
 {
-    params_require_2(params);
+    if (LixpCons_length(params) != 2)
+        return LixpError_new("wrong-number-of-arguments");
 
     VALUE a = LixpValue_evaluate(LixpCons_car(params), scope);
     VALUE b = LixpValue_evaluate(LixpCons_car(LixpCons_cdr(params)), scope);
