@@ -6,7 +6,7 @@ Alpha
 
 ### 0.0.2 (November 11 2010)
 
- * Starting static linking pre-built GC packages
+ * Started static linking pre-built GC packages
  * Fixed a lot of bugs in builtins
  * Added basic lambdas
 
