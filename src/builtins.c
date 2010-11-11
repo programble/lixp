@@ -362,10 +362,11 @@ VALUE LixpBuiltin_list_call(VALUE params, Scope *scope)
 
 VALUE LixpBuiltin_do_call(VALUE params, Scope *scope)
 {
-    params_require_1(params);
+    if (LixpCons_length(params) < 1)
+        return LixpError_new("wrong-number-of-arguments");
     
     VALUE iter = params;
-    while (!nilp(LixpCons_cdr(iter)))
+    while (!LixpCons_nil(LixpCons_cdr(iter)))
     {
         LixpValue_evaluate(LixpCons_car(iter), scope);
         iter = LixpCons_cdr(iter);
@@ -375,19 +376,19 @@ VALUE LixpBuiltin_do_call(VALUE params, Scope *scope)
 
 VALUE LixpBuiltin_let_call(VALUE params, Scope *scope)
 {
-    params_require_2(params);
+    if (LixpCons_length(params) < 2)
+        return LixpError_new("wrong-number-of-arguments");
     
     VALUE bindings = LixpCons_car(params);
 
     Scope *local_scope = Scope_new(scope);
 
-    VALUE iter = bindings;
-    while (!nilp(iter))
+    for (VALUE iter = bindings; !LixpCons_nil(iter); iter = LixpCons_cdr(iter))
     {
         VALUE pair = LixpCons_car(iter);
-        params_require_2(pair);
+        if (LixpCons_length(pair) != 2)
+            return LixpError_new("wrong-number-of-arguments");
         LixpBuiltin_set_call(pair, local_scope);
-        iter = LixpCons_cdr(iter);
     }
 
     return LixpBuiltin_do_call(LixpCons_cdr(params), local_scope);
@@ -395,56 +396,64 @@ VALUE LixpBuiltin_let_call(VALUE params, Scope *scope)
 
 VALUE LixpBuiltin_numberp_call(VALUE params, Scope *scope)
 {
-    params_require_1(params);
+    if (LixpCons_length(params) != 1)
+        return LixpError_new("wrong-number-of-arguments");
 
     return LixpValue_evaluate(LixpCons_car(params), scope)->type == LixpType_number ? t : nil;
 }
 
 VALUE LixpBuiltin_characterp_call(VALUE params, Scope *scope)
 {
-    params_require_1(params);
+    if (LixpCons_length(params) != 1)
+        return LixpError_new("wrong-number-of-arguments");
 
     return LixpValue_evaluate(LixpCons_car(params), scope)->type == LixpType_character ? t : nil;
 }
 
 VALUE LixpBuiltin_stringp_call(VALUE params, Scope *scope)
 {
-    params_require_1(params);
+    if (LixpCons_length(params) != 1)
+        return LixpError_new("wrong-number-of-arguments");
 
     return LixpValue_evaluate(LixpCons_car(params), scope)->type == LixpType_string ? t : nil;
 }
 
 VALUE LixpBuiltin_symbolp_call(VALUE params, Scope *scope)
 {
-    params_require_1(params);
+    if (LixpCons_length(params) != 1)
+        return LixpError_new("wrong-number-of-arguments");
 
     return LixpValue_evaluate(LixpCons_car(params), scope)->type == LixpType_symbol ? t : nil;
 }
 
 VALUE LixpBuiltin_keywordp_call(VALUE params, Scope *scope)
 {
-    params_require_1(params);
+    if (LixpCons_length(params) != 1)
+        return LixpError_new("wrong-number-of-arguments");
 
     return LixpValue_evaluate(LixpCons_car(params), scope)->type == LixpType_keyword ? t : nil;
 }
 
 VALUE LixpBuiltin_consp_call(VALUE params, Scope *scope)
 {
-    params_require_1(params);
+    if (LixpCons_length(params) != 1)
+        return LixpError_new("wrong-number-of-arguments");
 
     return LixpValue_evaluate(LixpCons_car(params), scope)->type == LixpType_cons ? t : nil;
 }
 
 VALUE LixpBuiltin_builtinp_call(VALUE params, Scope *scope)
 {
-    params_require_1(params);
+    if (LixpCons_length(params) != 1)
+        return LixpError_new("wrong-number-of-arguments");
 
     return LixpValue_evaluate(LixpCons_car(params), scope)->type == LixpType_builtin ? t : nil;
 }
 
 VALUE LixpBuiltin_errorp_call(VALUE params, Scope *scope)
 {
-    params_require_1(params);
+    if (LixpCons_length(params) != 1)
+        return LixpError_new("wrong-number-of-arguments");
 
     return LixpValue_evaluate(LixpCons_car(params), scope)->type == LixpType_error ? t : nil;
 }
@@ -452,23 +461,21 @@ VALUE LixpBuiltin_errorp_call(VALUE params, Scope *scope)
 VALUE LixpBuiltin_add_call(VALUE params, Scope *scope)
 {
     int acc = 0;
-    VALUE iter = params;
-    while (!nilp(iter))
+    for (VALUE iter = params; !LixpCons_nil(iter); iter = LixpCons_cdr(iter))
     {
         VALUE v = LixpValue_evaluate(LixpCons_car(iter), scope);
         if (v->type != LixpType_number)
             return LixpError_new("unexpected-type");
         acc += LixpNumber_value(v);
-        iter = LixpCons_cdr(iter);
     }
     return LixpNumber_new(acc);
 }
 
 VALUE LixpBuiltin_sub_call(VALUE params, Scope *scope)
 {
-    if (nilp(params))
+    if (LixpCons_nil(params))
         return LixpNumber_new(0);
-    if (nilp(LixpCons_cdr(params)))
+    if (LixpCons_nil(LixpCons_cdr(params)))
     {
         VALUE v = LixpValue_evaluate(LixpCons_car(params), scope);
         if (v->type != LixpType_number)
@@ -476,14 +483,12 @@ VALUE LixpBuiltin_sub_call(VALUE params, Scope *scope)
         return LixpNumber_new(LixpNumber_value(v) * -1);
     }
     int acc = LixpNumber_value(LixpValue_evaluate(LixpCons_car(params), scope));
-    VALUE iter = LixpCons_cdr(params);
-    while (!nilp(iter))
+    for (VALUE iter = LixpCons_cdr(params); !LixpCons_nil(iter); iter = LixpCons_cdr(iter))
     {
         VALUE v = LixpValue_evaluate(LixpCons_car(iter), scope);
         if (v->type != LixpType_number)
             return LixpError_new("unexpected-type");
         acc -= LixpNumber_value(v);
-        iter = LixpCons_cdr(iter);
     }
     return LixpNumber_new(acc);
 }
@@ -491,23 +496,21 @@ VALUE LixpBuiltin_sub_call(VALUE params, Scope *scope)
 VALUE LixpBuiltin_mul_call(VALUE params, Scope *scope)
 {
     int acc = 1;
-    VALUE iter = params;
-    while (!nilp(iter))
+    for (VALUE iter = params; !LixpCons_nil(iter); iter = LixpCons_cdr(iter))
     {
         VALUE v = LixpValue_evaluate(LixpCons_car(iter), scope);
         if (v->type != LixpType_number)
             return LixpError_new("unexpected-type");
         acc *= LixpNumber_value(v);
-        iter = LixpCons_cdr(iter);
     }
     return LixpNumber_new(acc);
 }
 
 VALUE LixpBuiltin_div_call(VALUE params, Scope *scope)
 {
-    if (nilp(params))
+    if (LixpCons_nil(params))
         return LixpNumber_new(1);
-    if (nilp(LixpCons_cdr(params)))
+    if (LixpCons_nil(LixpCons_cdr(params)))
     {
         VALUE v = LixpValue_evaluate(LixpCons_car(params), scope);
         if (v->type != LixpType_number)
@@ -517,8 +520,7 @@ VALUE LixpBuiltin_div_call(VALUE params, Scope *scope)
         return LixpNumber_new(1 / LixpNumber_value(v));
     }
     int acc = LixpNumber_value(LixpValue_evaluate(LixpCons_car(params), scope));
-    VALUE iter = LixpCons_cdr(params);
-    while (!nilp(iter))
+    for (VALUE iter = LixpCons_cdr(params); !LixpCons_nil(iter); iter = LixpCons_cdr(iter))
     {
         VALUE v = LixpValue_evaluate(LixpCons_car(iter), scope);
         if (v->type != LixpType_number)
@@ -526,7 +528,6 @@ VALUE LixpBuiltin_div_call(VALUE params, Scope *scope)
         if (LixpNumber_value(v) == 0)
             return LixpError_new("zero-division");
         acc /= LixpNumber_value(v);
-        iter = LixpCons_cdr(iter);
     }
     return LixpNumber_new(acc);
 }
@@ -534,6 +535,8 @@ VALUE LixpBuiltin_div_call(VALUE params, Scope *scope)
 VALUE LixpBuiltin_mod_call(VALUE params, Scope *scope)
 {
     params_require_2(params);
+    if (LixpCons_length(params) != 2)
+        return LixpError_new("wrong-number-of-arguments");
 
     VALUE a = LixpValue_evaluate(LixpCons_car(params), scope);
     VALUE b = LixpValue_evaluate(LixpCons_car(LixpCons_cdr(params)), scope);
