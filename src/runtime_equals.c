@@ -21,6 +21,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "consutils.h"
+
 int LixpNumber_equals(VALUE a, VALUE b)
 {
     return LixpNumber_value(a) == LixpNumber_value(b);
@@ -48,8 +50,18 @@ int LixpKeyword_equals(VALUE a, VALUE b)
 
 int LixpCons_equals(VALUE a, VALUE b)
 {
-    /* TODO: Compare each item? */
-    return LixpCons_car(a) == LixpCons_car(b) && LixpCons_cdr(a) == LixpCons_cdr(b);
+    if (LixpCons_length(a) != LixpCons_length(b))
+        return 0;
+    VALUE aiter = a;
+    VALUE biter = b;
+    while (!LixpCons_nil(aiter))
+    {
+        if (!LixpValue_equals(LixpCons_car(aiter), LixpCons_car(biter)))
+            return 0;
+        aiter = LixpCons_cdr(aiter);
+        biter = LixpCons_cdr(biter);
+    }
+    return 1;
 }
 
 int LixpBuiltin_equals(VALUE a, VALUE b)
