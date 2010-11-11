@@ -201,22 +201,21 @@ VALUE LixpBuiltin_cons_call(VALUE params, Scope *scope)
 
 VALUE LixpBuiltin_cond_call(VALUE params, Scope *scope)
 {
-    if (LixpCons_car(params) == NULL && LixpCons_cdr(params) == NULL)
+    if (LixpCons_nil(params))
         return nil;
 
-    VALUE iter = params;
-    while (!nilp(iter))
+    for (VALUE iter = params; !LixpCons_nil(iter); iter = LixpCons_cdr(iter))
     {
         VALUE pair = LixpCons_car(iter);
-        params_require_1(pair);
+        if (LixpCons_length(pair) < 1)
+            return LixpError_new("wrong-number-of-arguments");
         VALUE predicate = LixpCons_car(pair);
         VALUE then = LixpCons_car(LixpCons_cdr(pair));
         if (!then)
             then = predicate;
         VALUE result = LixpValue_evaluate(predicate, scope);
-        if (result->type != LixpType_cons || LixpCons_car(result) != NULL || LixpCons_cdr(result) != NULL)
+        if (result->type != LixpType_cons || !LixpCons_nil(result))
             return LixpValue_evaluate(then, scope);
-        iter = LixpCons_cdr(iter);
     }
     return nil;
 }
