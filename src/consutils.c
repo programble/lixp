@@ -29,11 +29,7 @@ int LixpCons_length(VALUE cons)
 {
     /* TODO: Store somewhere for less work? */
     int i = 0;
-    VALUE iter = cons;
-    while (!LixpCons_nil(cons))
-    {
+    for (VALUE iter = cons; !LixpCons_nil(cons); iter = LixpCons_cdr(iter))
         i++;
-        iter = LixpCons_cdr(iter);
-    }
     return i;
 }
