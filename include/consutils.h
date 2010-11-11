@@ -25,4 +25,6 @@ int LixpCons_nil(VALUE cons);
 
 int LixpCons_length(VALUE cons);
 
+#define LixpCons_each(cons, iter) for(VALUE iter = cons; !LixpCons_nil(iter); iter = LixpCons_cdr(iter))
+
 #endif
