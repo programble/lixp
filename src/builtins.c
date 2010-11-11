@@ -24,15 +24,8 @@
 #include "version.h"
 #include "consutils.h"
 
-/* TODO: Remove these when done replacing */
-#define params_require_1(x) ((void)x)
-#define params_require_2(x) ((void)x)
-#define params_require_3(x) ((void)x)
-
 #define t LixpSymbol_new("t")
 #define nil LixpCons_new(NULL, NULL)
-
-#define nilp(x) (LixpCons_car(x) == NULL && LixpCons_cdr(x) == NULL)
 
 void bind_builtins(Scope *scope)
 {
@@ -534,7 +527,6 @@ VALUE LixpBuiltin_div_call(VALUE params, Scope *scope)
 
 VALUE LixpBuiltin_mod_call(VALUE params, Scope *scope)
 {
-    params_require_2(params);
     if (LixpCons_length(params) != 2)
         return LixpError_new("wrong-number-of-arguments");
 
