@@ -270,7 +270,8 @@ VALUE LixpBuiltin_lt_call(VALUE params, Scope *scope)
 
 VALUE LixpBuiltin_def_call(VALUE params, Scope *scope)
 {
-    params_require_2(params);
+    if (LixpCons_length(params) != 2)
+        return LixpError_new("wrong-number-of-arguments");
 
     /* Travel up the scope tree to the global scope */
     while (scope->parent != NULL)
@@ -290,7 +291,8 @@ VALUE LixpBuiltin_def_call(VALUE params, Scope *scope)
 
 VALUE LixpBuiltin_undef_call(VALUE params, Scope *scope)
 {
-    params_require_1(params);
+    if (LixpCons_length(params) != 1)
+        return LixpError_new("wrong-number-of-arguments");
 
     /* Travel up the scope tree to the global scope */
     while (scope->parent != NULL)
@@ -310,7 +312,8 @@ VALUE LixpBuiltin_undef_call(VALUE params, Scope *scope)
 
 VALUE LixpBuiltin_set_call(VALUE params, Scope *scope)
 {
-    params_require_2(params);
+    if (LixpCons_length(params) != 2)
+        return LixpError_new("wrong-number-of-arguments");
 
     VALUE symbol = LixpCons_car(params);
     VALUE value = LixpCons_car(LixpCons_cdr(params));
@@ -328,7 +331,8 @@ VALUE LixpBuiltin_set_call(VALUE params, Scope *scope)
 
 VALUE LixpBuiltin_unset_call(VALUE params, Scope *scope)
 {
-    params_require_1(params);
+    if (LixpCons_length(params) != 1)
+        return LixpError_new("wrong-number-of-arguments");
 
     VALUE symbol = LixpCons_car(params);
     if (symbol->type != LixpType_symbol)
@@ -344,13 +348,11 @@ VALUE LixpBuiltin_unset_call(VALUE params, Scope *scope)
 
 VALUE LixpBuiltin_list_call(VALUE params, Scope *scope)
 {
-    VALUE piter = params;
     VALUE list = nil;
     VALUE liter = list;
-    while (!nilp(piter))
+    for (VALUE piter = params; !LixpCons_nil(piter); piter = LixpCons_cdr(piter))
     {
         LixpCons_car(liter) = LixpValue_evaluate(LixpCons_car(piter), scope);
-        piter = LixpCons_cdr(piter);
         VALUE next = nil;
         LixpCons_cdr(liter) = next;
         liter = next;
