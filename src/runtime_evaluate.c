@@ -22,6 +22,7 @@
 
 #include "scope.h"
 #include "builtins.h"
+#include "fn.h"
 
 VALUE LixpSymbol_evaluate(VALUE value, Scope *scope)
 {
@@ -45,6 +46,8 @@ VALUE LixpCons_evaluate(VALUE value, Scope *scope)
         return LixpCons_evaluate(value, scope);
     case LixpType_builtin:
         return LixpBuiltin_call(LixpCons_car(value), LixpCons_cdr(value), scope);
+    case LixpType_fn:
+        return LixpFn_call(LixpCons_car(value), LixpCons_cdr(value), scope);
     /* TODO: Come up with better names for these errors maybe */
     case LixpType_number:
         return LixpError_new("cannot-call-number");
