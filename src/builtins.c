@@ -22,10 +22,12 @@
 #include <gc.h>
 
 #include "version.h"
+#include "consutils.h"
 
-#define params_require_1(params) if (LixpCons_car(params) == NULL) return LixpError_new("wrong-number-of-arguments");
-#define params_require_2(params) if (LixpCons_car(params) == NULL || LixpCons_car(LixpCons_cdr(params)) == NULL) return LixpError_new("wrong-number-of-arguments");
-#define params_require_3(params) if (LixpCons_car(params) == NULL || LixpCons_car(LixpCons_cdr(params)) == NULL || LixpCons_car(LixpCons_cdr(LixpCons_cdr(params))) == NULL) return LixpError_new("wrong-number-of-arguments");
+/* TODO: Remove these when done replacing */
+#define params_require_1(x) ((void)x)
+#define params_require_2(x) ((void)x)
+#define params_require_3(x) ((void)x)
 
 #define t LixpSymbol_new("t")
 #define nil LixpCons_new(NULL, NULL)
@@ -152,44 +154,48 @@ VALUE LixpBuiltin_call(VALUE builtin, VALUE params, Scope *scope)
 
 VALUE LixpBuiltin_quote_call(VALUE params, Scope *scope)
 {
-    params_require_1(params);
+    if (LixpCons_length(params) != 1)
+        return LixpError_new("wrong-number-of-arguments");
     return LixpCons_car(params);
 }
 
 VALUE LixpBuiltin_eval_call(VALUE params, Scope *scope)
 {
-    params_require_1(params);
+    if (LixpCons_length(params) != 1)
+        return LixpError_new("wrong-number-of-arguments");
     return LixpValue_evaluate(LixpValue_evaluate(LixpCons_car(params), scope), scope);
 }
 
 
 VALUE LixpBuiltin_car_call(VALUE params, Scope *scope)
 {
-    params_require_1(params);
+    if (LixpCons_length(params) != 1)
+        return LixpError_new("wrong-number-of-arguments");
+    
     VALUE list = LixpValue_evaluate(LixpCons_car(params), scope);
     if (list->type != LixpType_cons)
-        return LixpError_new("unexpected-type"); /* TODO: Better error */
-    /* (car nil) ;-> nil */
-    if (nilp(list))
-        return list;
+        return LixpError_new("expected-cons");
+    if (LixpCons_nil(list))
+        return nil;
     return LixpCons_car(list);
 }
 
 VALUE LixpBuiltin_cdr_call(VALUE params, Scope *scope)
 {
-    params_require_1(params);
+    if (LixpCons_length(params) != 1)
+        return LixpError_new("wrong-number-of-arguments");
     VALUE list = LixpValue_evaluate(LixpCons_car(params), scope);
     if (list->type != LixpType_cons)
-        return LixpError_new("unexpected-type"); /* TODO: Better error */
-    /* (cdr nil) ;-> nil */
-    if (nilp(list))
-        return list;
+        return LixpError_new("expected-cons");
+    if (LixpCons_nil(list))
+        return nil;
     return LixpCons_cdr(list);
 }
 
 VALUE LixpBuiltin_cons_call(VALUE params, Scope *scope)
 {
-    params_require_2(params);
+    if (LixpCons_length(params) != 2)
+        return LixpError_new("wrong-number-of-arguments");
     return LixpCons_new(LixpValue_evaluate(LixpCons_car(params), scope), LixpValue_evaluate(LixpCons_car(LixpCons_cdr(params)), scope));
 }
 
