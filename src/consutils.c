@@ -25,6 +25,16 @@ int LixpCons_nil(VALUE cons)
     return LixpCons_car(cons) == NULL && LixpCons_cdr(cons) == NULL;
 }
 
+int LixpCons_improper(VALUE cons)
+{
+    return LixpCons_cdr(cons)->type != LixpType_cons;
+}
+
+int LixpCons_proper(VALUE cons)
+{
+    return LixpCons_cdr(cons)->type == LixpType_cons;
+}
+
 int LixpCons_length(VALUE cons)
 {
     /* TODO: Store somewhere for less work? */

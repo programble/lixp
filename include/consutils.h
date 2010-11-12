@@ -22,6 +22,8 @@
 #include "runtime.h"
 
 int LixpCons_nil(VALUE cons);
+int LixpCons_improper(VALUE cons);
+int LixpCons_proper(VALUE cons);
 
 int LixpCons_length(VALUE cons);
 
