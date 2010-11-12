@@ -50,6 +50,8 @@ int LixpKeyword_equals(VALUE a, VALUE b)
 
 int LixpCons_equals(VALUE a, VALUE b)
 {
+    if (LixpCons_improper(a) || LixpCons_improper(b))
+        return LixpValue_equals(LixpCons_car(a), LixpCons_car(b)) && LixpValue_equals(LixpCons_cdr(a), LixpCons_cdr(b));
     if (LixpCons_length(a) != LixpCons_length(b))
         return 0;
     VALUE aiter = a;
