@@ -17,15 +17,12 @@
 
 ROCK:=rock
 
-OUTPUT:=lixp
 
-all: $(OUTPUT)
-
-$(OUTPUT): source/lixp.ooc
-	rock $< -o=$@
+all:
+	$(ROCK) source/lixp.ooc
 
 clean:
-	rm -f $(OUTPUT)
+	rm -f lixp
 
 libsclean: clean
 	rm -rf .libs/
