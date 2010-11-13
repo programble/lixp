@@ -10,7 +10,7 @@ LispCharacter: class extends LispValue {
         format("\\%c", value)
     }
 
-    equals?: func (other: LispValue) {
+    equals?: func (other: LispValue) -> Bool {
         other class == This && value == other as This value
     }
 

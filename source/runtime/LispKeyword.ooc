@@ -10,7 +10,7 @@ LispKeyword: class extends LispValue {
         format(":%s", value)
     }
 
-    equals?: func (other: LispValue) {
+    equals?: func (other: LispValue) -> Bool {
         other class == This && value == other as This value
     }
 
