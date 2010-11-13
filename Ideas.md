@@ -118,3 +118,8 @@ namespaces. The only real difference would be that where a scope calls
 on its parent to find a symbol, a namespace would call on each of its
 'used' namespaces to find a symbol. Only once a symbol look up reaches
 the `main` namespace and is not found will it officially be undefined.
+
+### Oh oh oh
+
+The scope can have a pointer to the namespace it's in! That should
+mean only one global variable, for the treemap of namespaces.
