@@ -11,7 +11,7 @@ LispKeyword: class extends LispValue {
     }
 
     equals?: func (other: LispValue) {
-        // TODO: Implement
+        other class == This && value == other as This value
     }
 
     evaluate: func (scope: Scope<LispValue>) -> LispValue {
