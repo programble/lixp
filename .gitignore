@@ -1,4 +1,3 @@
 *~
-*.o
 lixp
-include/version.h
+.libs/
