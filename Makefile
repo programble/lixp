@@ -21,7 +21,7 @@ OUTPUT:=lixp
 
 all: $(OUTPUT)
 
-$(OUTPUT): source/Lixp.ooc
+$(OUTPUT): source/lixp.ooc
 	rock $< -o=$@
 
 clean:
