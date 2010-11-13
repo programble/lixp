@@ -6,6 +6,10 @@ LispValue: abstract class {
     evaluate: abstract func (scope: Scope<LispValue>) -> LispValue
 }
 
-operator == (a: LispValue, b: LixpValue) -> Bool {
+operator == (a: LispValue, b: LispValue) -> Bool {
     a equals?(b)
+}
+
+operator != (a: LispValue, b: LispValue) -> Bool {
+    !a equals?(b)
 }
