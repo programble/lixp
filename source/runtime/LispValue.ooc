@@ -5,3 +5,7 @@ LispValue: abstract class {
     equals?: abstract func (other: This) -> Bool
     evaluate: abstract func (scope: Scope<LispValue>) -> LispValue
 }
+
+operator == (a: LispValue, b: LixpValue) -> Bool {
+    a equals?(b)
+}
