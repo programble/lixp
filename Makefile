@@ -30,6 +30,7 @@ libsclean: clean
 distclean: clean
 	rm -f $(wildcard *~)
 	rm -f $(wildcard source/*~)
+	rm -f $(wildcard source/*/*~)
 
 todo:
 	@grep -rInso 'TODO: \([^*]\+\)' source/
