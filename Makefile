@@ -19,7 +19,7 @@ ROCK:=rock
 
 
 all:
-	$(ROCK) source/lixp.ooc
+	$(ROCK) -v source/lixp.ooc
 
 clean:
 	rm -f lixp
