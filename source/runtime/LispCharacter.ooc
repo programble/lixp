@@ -1,5 +1,4 @@
 import LispValue
-import ../Scope
 
 LispCharacter: class extends LispValue {
     value: Char

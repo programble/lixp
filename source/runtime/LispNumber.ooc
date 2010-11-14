@@ -1,5 +1,4 @@
 import LispValue
-import ../Scope
 
 LispNumber: class extends LispValue {
     ivalue: Int
