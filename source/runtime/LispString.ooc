@@ -1,3 +1,5 @@
+import text/EscapeSequence
+
 import LispValue
 
 LispString: class extends LispValue {
@@ -6,7 +8,7 @@ LispString: class extends LispValue {
     init: func (=value)
 
     toString: func -> String {
-        "\"%s\"" format(value escape())
+        "\"%s\"" format(EscapeSequence escape(value))
     }
 
     equals?: func (other: LispValue) -> Bool {
