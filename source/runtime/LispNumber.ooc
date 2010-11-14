@@ -31,5 +31,5 @@ LispNumber: class extends LispValue {
             }
         }
         false
-    }   
+    }
 }
