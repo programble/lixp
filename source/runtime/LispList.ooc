@@ -28,9 +28,21 @@ LispProperList: class extends LispList {
     }
 
     equals?: func (other: LispValue) -> Bool {
-        // TODO: Implement
-        //other class == This && this items equals?(other as This items)
-        false
+        if (other class != This) {
+            return false
+        }
+        if (other as This items size != this items size) {
+            return false
+        }
+
+        acc := true
+        for (i in 0..items size) {
+            if (!this items get(i) equals?(other as This items get(i))) {
+                acc = false
+                break
+            }
+        }
+        return acc
     }
 
     evaluate: func (scope: Scope<LispValue>) -> LispValue {
