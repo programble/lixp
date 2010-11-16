@@ -35,7 +35,7 @@ LispProperList: class extends LispList {
 
     evaluate: func (scope: Scope<LispValue>) -> LispValue {
         callee := items first()
-        args := items rest()
+        args := items[1..items size]
         callee call(args, scope)
     }
 }
