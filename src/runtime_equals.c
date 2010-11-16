@@ -78,7 +78,6 @@ int LixpError_equals(VALUE a, VALUE b)
 
 int LixpFn_equals(VALUE a, VALUE b)
 {
-    /* TODO: Should fns be equal only if they are the exact same fn or not? */
     return a == b;
 }
 
