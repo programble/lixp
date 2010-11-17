@@ -3,6 +3,32 @@ import structs/ArrayList
 
 import runtime/[LispValue, LispNumber, LispCharacter, LispString, LispSymbol, LispKeyword, LispList]
 
+// Some extra Reader methods we need
+extend Reader {
+    readWhile: func (chars: String) -> String {
+        // Based off readUntil code
+        sb := Buffer new(1024)
+        while (hasNext?()) {
+            c := read()
+            if (!chars contains?(c) || (!hasNext?() && c == 8)) {
+                break
+            }
+            sb append(c)
+        }
+        return sb toString()
+    }
+
+    skipWhile: func (chars: String) {
+        // Based off skipUntil code
+        while (hasNext?()) {
+            c := read()
+            if (!chars contains?(c)) {
+                break
+            }
+        }
+    }
+}
+
 LispReader: class {
     reader: Reader
 
@@ -16,8 +42,16 @@ LispReader: class {
         reader hasNext?()
     }
 
+    skipWhitespace: func {
+        reader skipWhile(" \t\r\n")
+    }
+
     read: func -> LispValue {
+        // Skip leading whitespace
+        skipWhitespace()
+        
         dispatch := reader peek()
+        
         if (dispatch == ')') {
             /* TODO: Should there be a ReaderException or something? */
             raise(This, "Mismatched parentheses")
@@ -47,5 +81,46 @@ LispReader: class {
             all add(read)
         }
         return all
+    }
+
+    readList: func -> LispList {
+        // Skip opening paren
+        reader read()
+
+        skipWhitespace()
+        if (!hasNext?()) {
+            raise(This, "Unexpected EOF")
+        }
+
+        // Empty list (nil)
+        if (reader peek() == ')') {
+            reader read()
+            return LispList new()
+        }
+
+        // Read the first item
+        first := read()
+
+        skipWhitespace()
+
+        // Check for improper list
+        if (reader peek() == '.') {
+            reader read() // Skip .
+            second := read()
+            reader read() // Skip )
+            return LispList new(first, second)
+        }
+
+        // Proper list
+        list := ArrayList<LispValue> new()
+        list add(first)
+        while (true) {
+            skipWhitespace()
+            if (reader peek() == ')') {
+                break
+            }
+            list add(read())
+        }
+        return LispList new(list)
     }
 }
