@@ -123,4 +123,10 @@ LispReader: class {
         }
         return LispList new(list)
     }
+
+    readNumber: func -> LispNumber {
+        str := reader readUntil(' ')
+        if (str contains?('.')) {
+            value := str toFloat()
+            // toFloat is stupid.
 }
