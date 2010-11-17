@@ -3,6 +3,7 @@ import structs/ArrayList
 import ../Scope
 
 LispValue: abstract class {
+
     toString: abstract func -> String
     
     equals?: abstract func (other: LispValue) -> Bool 
