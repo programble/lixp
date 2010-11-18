@@ -172,6 +172,7 @@ LispReader: class {
     readCharacter: func -> LispCharacter {
         // Skip over \
         reader read()
+        reader read() // No idea why this second read is required :\
         if (!reader hasNext?()) {
             raise(This, "Unexpected EOF while reading character literal")
         }
