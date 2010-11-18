@@ -19,10 +19,11 @@ extend Reader {
     }
 
     skipWhile: func ~str (chars: String) {
-        // Based off skipUntil code
+        // Based off skipWhile code
         while (hasNext?()) {
             c := read()
             if (!chars contains?(c)) {
+                rewind(1)
                 break
             }
         }
