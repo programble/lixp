@@ -127,6 +127,25 @@ LispReader: class {
     readNumber: func -> LispNumber {
         str := reader readUntil(' ')
         if (str contains?('.')) {
-            value := str toFloat()
-            // toFloat is stupid.
+            // Due to String toFloat() being very stupid, here is a
+            // convoluted conversion using sscanf that really detracts
+            // from the beauty of ooc
+            f: Float
+            valid: Bool = sscanf(str, "%f", f&)
+            if (valid) {
+                return LispNumber new(f)
+            } else {
+                raise(This, "Invalid float literal")
+            }
+        } else {
+            // More of that awesome C-esque sscanf stuff!
+            i: Int
+            valid: Bool = sscanf(str, "%i", i&)
+            if (valid) {
+                return LispNumber(i)
+            } else {
+                raise(This, "Invalid int literal")
+            }
+        }
+    }
 }
