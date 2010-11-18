@@ -4,15 +4,15 @@ import LispValue
 import ../Scope
 
 LispList: abstract class extends LispValue {
-    new: static func~proper (items: ArrayList<LispValue>) -> LispList {
+    new: static func ~proper (items: ArrayList<LispValue>) -> LispList {
         LispProperList new(items)
     }
 
-    new: static func~improper (car, cdr: LispValue) -> LispList {
+    new: static func ~improper (car, cdr: LispValue) -> LispList {
         LispImproperList new(car, cdr)
     }
 
-    new: static func~nil -> LispList {
+    new: static func ~nil -> LispList {
         LispProperList new(ArrayList<LispValue> new())
     }
 }
@@ -23,6 +23,10 @@ LispProperList: class extends LispList {
     init: func (=items)
 
     toString: func -> String {
+        // Show an empty list as 'nil'
+        if (items size == 0) {
+            return "nil"
+        }
         stritems := items map(|x| x toString())
         "(%s)" format(stritems join(" "))
     }
@@ -46,6 +50,10 @@ LispProperList: class extends LispList {
     }
 
     evaluate: func (scope: Scope<LispValue>) -> LispValue {
+        // nil evaluates to nil
+        if (items size == 0) {
+            return this
+        }
         callee := items first()
         args := items[1..items size]
         callee call(args, scope)
