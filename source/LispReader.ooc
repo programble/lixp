@@ -27,6 +27,18 @@ extend Reader {
             }
         }
     }
+
+    readUntil: func ~str (chars: String) -> String {
+        sb := Buffer new (1024)
+        while (hasNext?()) {
+            c := read()
+            if (chars contains?(c) || (!hasNext?() && c == 8)) {
+                break
+            }
+            sb append(c)
+        }
+        return sb toString()
+    }
 }
 
 LispReader: class {
@@ -78,7 +90,7 @@ LispReader: class {
     readAll: func -> ArrayList<LispValue> {
         all := ArrayList<LispValue> new()
         while (hasNext?()) {
-            all add(read)
+            all add(read())
         }
         return all
     }
@@ -125,7 +137,7 @@ LispReader: class {
     }
 
     readNumber: func -> LispNumber {
-        str := reader readUntil(' ')
+        str := reader readUntil(" \t\r\n)")
         if (str contains?('.')) {
             // Due to String toFloat() being very stupid, here is a
             // convoluted conversion using sscanf that really detracts
@@ -142,10 +154,57 @@ LispReader: class {
             i: Int
             valid: Bool = sscanf(str, "%i", i&)
             if (valid) {
-                return LispNumber(i)
+                return LispNumber new(i)
             } else {
                 raise(This, "Invalid int literal")
             }
         }
+    }
+
+    readCharacter: func -> LispCharacter {
+        // Skip over \
+        reader read()
+        if (!reader hasNext?()) {
+            raise(This, "Unexpected EOF while reading character literal")
+        }
+        return LispCharacter new(reader read())
+    }
+
+    readString: func -> LispString {
+        // Skip over opening "
+        reader read()
+        if (!reader hasNext?()) {
+            raise(This, "Unexpected EOF while reading string literal")
+        }
+        str := reader readUntil('"')
+        // Verify we actually had a closing "
+        // If we didn't, it means EOF was hit first, right?
+        reader rewind(1)
+        if (reader read() != '"') {
+            raise(This, "Unexpected EOF while reading string literal")
+        }
+        return LispString new(str)
+    }
+
+    readKeyword: func -> LispKeyword {
+        // Skip :
+        reader read()
+        str := reader readUntil(" \t\r\n)")
+        return LispKeyword new(str)
+    }
+
+    readQuote: func -> LispList {
+        // Skip '
+        reader read()
+
+        list := ArrayList<LispValue> new()
+        list add(LispSymbol new("quote"))
+        list add(read())
+        return LispList new(list)
+    }
+
+    readSymbol: func -> LispSymbol {
+        str := reader readUntil(" \t\r\n)")
+        return LispSymbol new(str)
     }
 }
