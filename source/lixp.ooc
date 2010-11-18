@@ -13,7 +13,8 @@ main: func {
         reader := LispReader new(input)
         exprs := reader readAll()
         for (expr in exprs) {
-            expr evaluate(scope) toString() println()
+            //expr evaluate(scope) toString() println()
+            expr toString() println()
         }
     }
 }
