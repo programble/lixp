@@ -18,7 +18,7 @@ extend Reader {
         return sb toString()
     }
 
-    skipWhile: func (chars: String) {
+    skipWhile: func ~str (chars: String) {
         // Based off skipUntil code
         while (hasNext?()) {
             c := read()
