@@ -34,6 +34,7 @@ extend Reader {
         while (hasNext?()) {
             c := read()
             if (chars contains?(c) || (!hasNext?() && c == 8)) {
+                rewind(1)
                 break
             }
             sb append(c)
@@ -120,16 +121,22 @@ LispReader: class {
         if (reader peek() == '.') {
             reader read() // Skip .
             second := read()
-            reader read() // Skip )
+            skipWhitespace()
+            if (reader peek() != ')') {
+                raise(This, "Invalid improper list")
+            }
+            // Skip )
+            reader read()
             return LispList new(first, second)
         }
 
         // Proper list
         list := ArrayList<LispValue> new()
         list add(first)
-        while (true) {
+        while (reader hasNext?()) {
             skipWhitespace()
             if (reader peek() == ')') {
+                reader read()
                 break
             }
             list add(read())
