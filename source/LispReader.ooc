@@ -66,26 +66,20 @@ LispReader: class {
         
         dispatch := reader peek()
         
-        if (dispatch == ')') {
-            // TODO: Should there be a ReaderException or something?
-            raise(This, "Mismatched parentheses")
-        } else if (dispatch == '(') {
-            return readList()
-        } else if ((dispatch >= '0' && dispatch <= '9') || dispatch == '-') {
-            return readNumber()
-        } else if (dispatch == '\\') {
-            return readCharacter()
-        } else if (dispatch == '"') {
-            return readString()
-        } else if (dispatch == ':') {
-            return readKeyword()
-        } else if (dispatch == '\'') {
-            return readQuote()
-        } else if (dispatch == ';') {
-            reader skipLine()
-            return read()
-        } else {
-            return readSymbol()
+        if ((dispatch >= '0' && dispatch <= '9') || dispatch == '-') {
+            readNumber()
+        } else match (dispatch) {
+            case ')' => raise(This, "Mismatched parenthesis") // TODO: Some specific error type?
+            case '(' => readList()
+            case '\\' => readCharacter()
+            case '"' => readString()
+            case ':' => readKeyword()
+            case '\'' => readQuote()
+            case ';' =>
+                reader skipLine()
+                // TODO: Fix this. It will OOB error if the comment is at the end of the input
+                read()
+            case => readSymbol()
         }
     }
 
