@@ -150,13 +150,18 @@ LispReader: class {
             // Due to String toFloat() being very stupid, here is a
             // convoluted conversion using sscanf that really detracts
             // from the beauty of ooc
-            f: Float
+            /*f: Float
             valid: Bool = sscanf(str, "%f", f&)
             if (valid) {
                 return LispNumber new(f)
             } else {
                 raise(This, "Invalid float literal")
-            }
+            }*/
+            // sscanf is stupid with floats
+            // Use toFloat and just hope it's valid
+            //return LispNumber new(str toFloat())
+            // Floats don't work at fucking all. Fuck you.
+            return LispString new("FUCK YOU") as LispNumber
         } else {
             // More of that awesome C-esque sscanf stuff!
             i: Int
