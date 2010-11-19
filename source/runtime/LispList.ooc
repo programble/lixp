@@ -54,7 +54,7 @@ LispProperList: class extends LispList {
         if (items size == 0) {
             return this
         }
-        callee := items first()
+        callee := items first() evaluate(scope)
         args := items[1..items size]
         callee call(args, scope)
     }
