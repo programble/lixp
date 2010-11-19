@@ -122,6 +122,10 @@ LispReader: class {
             reader read() // Skip .
             second := read()
             skipWhitespace()
+            // EOF at end of list with no )
+            if (!reader hasNext?()) {
+                raise(This, "Unexpected EOF while reading list")
+            }
             if (reader peek() != ')') {
                 raise(This, "Invalid improper list")
             }
@@ -133,8 +137,12 @@ LispReader: class {
         // Proper list
         list := ArrayList<LispValue> new()
         list add(first)
-        while (reader hasNext?()) {
+        while (true) {
             skipWhitespace()
+            // EOF in middle of list
+            if (!reader hasNext?()) {
+                raise(This, "Unexpected EOF while reading list")
+            }
             if (reader peek() == ')') {
                 reader read()
                 break
