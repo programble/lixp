@@ -1,5 +1,6 @@
 import io/[Reader, StringReader]
 import structs/ArrayList
+import text/EscapeSequence
 
 import runtime/[LispValue, LispNumber, LispCharacter, LispString, LispSymbol, LispKeyword, LispList]
 
@@ -199,7 +200,7 @@ LispReader: class {
         if (reader read() != '"') {
             raise(This, "Unexpected EOF while reading string literal")
         }
-        return LispString new(str)
+        return LispString new(EscapeSequence unescape(str))
     }
 
     readKeyword: func -> LispKeyword {
