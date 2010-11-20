@@ -21,6 +21,10 @@ Or if lambda bodies are multiple expressions,
       ((0) 1)
       ((n) (* n (factorial (- n 1)))))
 
+The second example is unlikely, not only because I am lazy, but because
+it seems there are unnecessary parentheses. If you want multiple
+expressions in a lambda then use a `do`, simple as that.
+
 Currying would be cool too
 --------------------------
 
@@ -29,30 +33,56 @@ Currying would be cool too
     (def add2 (add 2))
     (add2 5) ;-> 7
 
+### No, it wouldn't
+
+Currying can easily be defined as a macro then used as `(curry (foo
+bar baz))`. Having it built in makes no sense at all.
+
 Lazy lists would be nice wouldn't they
 --------------------------------------
 
-No I have no idea how I would implement them.
+A lazy list would need a generator function. The function would need
+to take parameters of the current index and the last item in the list,
+and would need to return a new item.
 
-Errors
-------
+### Problem
 
-If a function fails, it evaluates to an error. Perhaps something like
+Generators for things like `map` would need some extra data (the
+original list and the function to apply). How would we handle that?
+Perhaps if lazy generators were classes, the `map` function could
+return a special subclass of `LazyGenerator` that stores those
+things. I think that would be the best solution.
 
-    (!error-type "error details" function-of-origin line-number "filename")
+Actually, `map` can just return a subclass of `LazyList`, and
+`LazyList` would have an abstract function `generate` that the
+subclass would implement.
 
-Then if another error arises from that error, the new error should be prepended either like
+### Hm...
 
-    ((error-1) (error-2))
+Actually, the generate function should take an index of what to
+evaluate up to. See, `LazyList` would be a subclass of `List`, so what
+the generate function must do is populate its `items` member until its
+length is the index passed to it. Does that make sense?
 
-or some other way. This will provide a sort of traceback.
+So, the `take` function for example, when given the index of 5, would
+call on the lazy list to generate up to index 5, then return that
+value.
 
-Or something completely different!
+But what about incremental things? If 3 are already generated, and now
+we want 5, we would need to figure out which ones actually need to be
+generated.
 
+And how about telling the actual length of the list. Like, when the
+list is actually ended. Hm...
+
+How, how, how?
+    
 I want to allow reader macros
 -----------------------------
 
-Yes.
+This would require exposing the entire reader to Lixp. That would
+require the reader to be a bit flexible, which is not likely to just
+happen. This will need work.
 
 Namespacing
 -----------
