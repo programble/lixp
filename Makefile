@@ -17,9 +17,12 @@
 
 ROCK:=rock
 
+ROCKFLAGS=-g -v
 
-all:
-	$(ROCK) -v source/lixp.ooc
+SOURCES:=$(wildcard source/*) $(wildcard source/*/*)
+
+lixp: $(SOURCES) Makefile
+	$(ROCK) $(ROCKFLAGS) source/lixp.ooc
 
 clean:
 	rm -f lixp
@@ -27,7 +30,7 @@ clean:
 libsclean: clean
 	rm -rf .libs/
 
-distclean: clean
+distclean: libsclean
 	rm -f $(wildcard *~)
 	rm -f $(wildcard source/*~)
 	rm -f $(wildcard source/*/*~)
