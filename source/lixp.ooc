@@ -16,5 +16,6 @@ main: func {
             //expr evaluate(scope) toString() println()
             expr toString() println()
         }
+        // TODO: Fix evaluation of random data on EOF
     }
 }
