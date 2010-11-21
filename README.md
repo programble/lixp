@@ -1,41 +1,7 @@
 Lixp
 ====
 
-Some kind of Lisp in C.
-
-Dependencies
-------------
-
- * [Boehm GC](http://www.hpl.hp.com/personal/Hans_Boehm/gc/) (Pre-built packages are provided for Linux32, Linux64, Haiku32, Win32 and OSX)
- * [GNU Readline](http://tiswww.case.edu/php/chet/readline/rltop.html) (Optional: `make no-readline`)
-
-System Requirements
--------------------
-
-Lixp has been tested on:
-
- * Linux 32-bit
- * Linux 64-bit
-
-Building
---------
-
-    make
-
-### Building Lixp without GNU Readline
-
-    make no-readline
-
-### Make variables
-
- * `CC`: C compiler to use when building Lixp
- * `GC_PATH`: Replace with `-lgc` to dynamically link your own build of Boehm GC
- * `OUTPUT`: Output executable file
-
-Installing
-----------
-
-Lixp cannot yet be installed.
+This is an experimental re-write of Lixp in ooc.
 
 License
 -------

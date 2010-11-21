@@ -1,6 +1,5 @@
 To Do
 =====
 
- * Re-write reader to handle EOFs and other errors better
- * Rename `args` and `params` to be consistent
- * Write some unit tests
+ * Use `LinkedList` for the backend to `LispList`, since that would
+   probably be more efficient for my uses

@@ -1,4 +1,4 @@
 *~
-*.o
 lixp
-include/version.h
+.libs/
+rock_tmp/
