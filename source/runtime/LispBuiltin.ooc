@@ -8,7 +8,9 @@ LispBuiltins: enum {
     car,
     cdr,
     cons,
-    cond
+    cond,
+
+    eq
 }
 
 LispBuiltin: class extends LispValue {
@@ -27,6 +29,8 @@ LispBuiltin: class extends LispValue {
         scope["cdr"] = This new(LispBuiltins cdr, "cdr")
         scope["cons"] = This new(LispBuiltins cons, "cons")
         scope["cond"] = This new(LispBuiltins cond, "cond")
+
+        scope["="] = This new(LispBuiltins eq, "=")
     }
 
     toString: func -> String {
@@ -45,6 +49,8 @@ LispBuiltin: class extends LispValue {
             case LispBuiltins cdr => cdr(arguments, scope)
             case LispBuiltins cons => cons(arguments, scope)
             case LispBuiltins cond => cond(arguments, scope)
+
+            case LispBuiltins eq => eq(arguments, scope)
         }
     }
 
@@ -137,5 +143,16 @@ LispBuiltin: class extends LispValue {
             }
         }
         return LispList new()
+    }
+
+    eq: func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+        if (arguments size != 2) {
+            raise(This, "Wrong number of arguments") // TODO: Proper error
+        }
+        if (arguments[0] evaluate(scope) equals?(arguments[1] evaluate(scope))) {
+            return LispSymbol new("t")
+        } else {
+            return LispList new()
+        }
     }
 }
