@@ -23,6 +23,7 @@ LispBuiltin: class extends LispValue {
 
     call: func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
         match (value) {
+            case LispBuiltins quote => quote(arguments, scope)
             case LispBuiltins car => car(arguments, scope)
             case LispBuiltins cdr => cdr(arguments, scope)
         }
