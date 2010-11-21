@@ -13,6 +13,12 @@ LispBuiltin: class extends LispValue {
 
     init: func (=value)
 
+    bindAll: static func (scope: Scope<LispValue>) {
+        scope["quote"] = This new(LispBuiltins quote)
+        scope["car"] = This new(LispBuiltins car)
+        scope["cdr"] = This new(LispBuiltins cdr)
+    }
+
     toString: func -> String {
         "%s" format(value)
     }
