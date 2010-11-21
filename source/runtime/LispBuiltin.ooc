@@ -1,6 +1,6 @@
 import structs/ArrayList
 import ../Scope
-import [LispValue, LispList]
+import [LispValue, LispList, LispSymbol]
 
 LispBuiltins: enum {
     quote,
@@ -10,17 +10,21 @@ LispBuiltins: enum {
 
 LispBuiltin: class extends LispValue {
     value: LispBuiltins
+    str: String
 
-    init: func (=value)
+    init: func (=value, =str)
 
     bindAll: static func (scope: Scope<LispValue>) {
-        scope["quote"] = This new(LispBuiltins quote)
-        scope["car"] = This new(LispBuiltins car)
-        scope["cdr"] = This new(LispBuiltins cdr)
+        scope["nil"] = LispList new()
+        scope["t"] = LispSymbol new("t")
+        
+        scope["quote"] = This new(LispBuiltins quote, "quote")
+        scope["car"] = This new(LispBuiltins car, "car")
+        scope["cdr"] = This new(LispBuiltins cdr, "cdr")
     }
 
     toString: func -> String {
-        "%s" format(value)
+        "%s" format(str)
     }
 
     equals?: func (other: LispValue) -> Bool {
