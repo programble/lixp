@@ -1,33 +1,59 @@
 import structs/ArrayList
 import ../Scope
-import LispValue
+import [LispValue, LispList]
+
+LispBuiltins: enum {
+    car,
+    cdr
+}
 
 LispBuiltin: class extends LispValue {
-    value: Func (ArrayList<LispValue>, Scope<LispValue>) -> LispValue
-    //value: Func
-    name: String
+    value: LispBuiltins
 
-    // All of these kill rock
-    //init: func (=name, =value)
-    //init: func (=name, .value) {
-    //init: func (=name, value: Func (ArrayList<LispValue>, Scope<LispValue>) -> LispValue) {
-    //init: func (=name, value: Func) {
-    //init: func (value: Func) {//, name: String) {
-    //init: func (name: String, value: Func) {
-    //init: func (=name, =value) {
-    init: func (=name)
-        //this value = value
-    //}
+    init: func (=value)
 
     toString: func -> String {
-        "%s" format(name)
+        "%s" format(value)
     }
 
     equals?: func (other: LispValue) -> Bool {
-        other class == This && this name == other as This name
+        other class == This && this value == other as This value
     }
 
     call: func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
-        value(arguments, scope)
+        match (value) {
+            case LispBuiltins car => car(arguments, scope)
+            case LispBuiltins cdr => cdr(arguments, scope)
+        }
+    }
+
+    car: func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+        if (arguments size != 1) {
+            raise(This, "Wrong number of arguments") // TODO: Specific error type
+        }
+        list := arguments[0]
+        if (list class != LispProperList && list class != LispImproperList) {
+            raise(This, "Expecting type List, got blah") // TODO: Proper error
+        }
+        if (list class == LispProperList) {
+            list as LispProperList items[0]
+        } else {
+            list as LispImproperList car
+        }
+    }
+
+    cdr: func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+        if (arguments size != 1) {
+            raise(This, "Wrong number of arguments") // TODO: Specific error type
+        }
+        list := arguments[0]
+        if (list class != LispProperList && list class != LispImproperList) {
+            raise(This, "Expecting type List, got blah") // TODO: Proper error
+        }
+        if (list class == LispProperList) {
+            LispList new(list as LispProperList items[1..-1])
+        } else {
+            list as LispImproperList cdr
+        }
     }
 }
