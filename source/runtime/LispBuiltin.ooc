@@ -7,7 +7,8 @@ LispBuiltins: enum {
     eval,
     car,
     cdr,
-    cons
+    cons,
+    cond
 }
 
 LispBuiltin: class extends LispValue {
@@ -25,6 +26,7 @@ LispBuiltin: class extends LispValue {
         scope["car"] = This new(LispBuiltins car, "car")
         scope["cdr"] = This new(LispBuiltins cdr, "cdr")
         scope["cons"] = This new(LispBuiltins cons, "cons")
+        scope["cond"] = This new(LispBuiltins cond, "cond")
     }
 
     toString: func -> String {
@@ -42,6 +44,7 @@ LispBuiltin: class extends LispValue {
             case LispBuiltins car => car(arguments, scope)
             case LispBuiltins cdr => cdr(arguments, scope)
             case LispBuiltins cons => cons(arguments, scope)
+            case LispBuiltins cond => cond(arguments, scope)
         }
     }
 
@@ -111,5 +114,28 @@ LispBuiltin: class extends LispValue {
         }
         // Third case, (cons foo bar) -> (foo . bar)
         return LispList new(car, cdr)
+    }
+
+    cond: func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+        for (pair in arguments) {
+            if (pair class != LispProperList) {
+                raise(This, "Unexpected type and i need an error system") // TODO: Error
+            }
+            // First case, (foo) -> foo
+            if (pair as LispProperList items size == 1) {
+                return pair as LispProperList items[0] evaluate(scope)
+            }
+            // Second case, (foo bar) -> bar if foo != nil
+            if (pair as LispProperList items size == 2) {
+                if (!pair as LispProperList items[0] evaluate(scope) equals?(LispList new())) {
+                    return pair as LispProperList items[1] evaluate(scope)
+                }
+            }
+            // Third case, too many items
+            if (pair as LispProperList items size > 2) {
+                raise(This, "TODO: SOme error") // TODO: Error
+            }
+        }
+        return LispList new()
     }
 }
