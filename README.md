@@ -1,7 +1,22 @@
 Lixp
 ====
 
-This is an experimental re-write of Lixp in ooc.
+Some kind of lisp in [ooc](http://ooc-lang.org/).
+
+Dependencies
+------------
+
+ * [rock](https://github.com/nddrylliog/rock), ooc's compiler
+
+Building
+--------
+
+    make
+
+### Make variables
+
+ * `ROCK`: The location of the rock executable (default: `rock`)
+ * `ROCKFLAGS`: The flags to run rock with (default: `-g -v`)
 
 License
 -------
