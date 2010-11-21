@@ -4,6 +4,7 @@ import [LispValue, LispList, LispSymbol]
 
 LispBuiltins: enum {
     quote,
+    eval,
     car,
     cdr
 }
@@ -19,6 +20,7 @@ LispBuiltin: class extends LispValue {
         scope["t"] = LispSymbol new("t")
         
         scope["quote"] = This new(LispBuiltins quote, "quote")
+        scope["eval"] = This new(LispBuiltins eval, "eval")
         scope["car"] = This new(LispBuiltins car, "car")
         scope["cdr"] = This new(LispBuiltins cdr, "cdr")
     }
@@ -34,6 +36,7 @@ LispBuiltin: class extends LispValue {
     call: func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
         match (value) {
             case LispBuiltins quote => quote(arguments, scope)
+            case LispBuiltins eval => eval(arguments, scope)
             case LispBuiltins car => car(arguments, scope)
             case LispBuiltins cdr => cdr(arguments, scope)
         }
@@ -44,6 +47,13 @@ LispBuiltin: class extends LispValue {
             raise(This, "Wrong number of arguments") // TODO: Specific error type
         }
         arguments[0]
+    }
+
+    eval: func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+        if (arguments size != 1) {
+            raise(This, "Wrong number of arguments") // TODO: Specific error type
+        }
+        arguments[0] evaluate(scope) evaluate(scope)
     }
 
     car: func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
