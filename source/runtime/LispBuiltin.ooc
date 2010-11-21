@@ -6,7 +6,8 @@ LispBuiltins: enum {
     quote,
     eval,
     car,
-    cdr
+    cdr,
+    cons
 }
 
 LispBuiltin: class extends LispValue {
@@ -23,6 +24,7 @@ LispBuiltin: class extends LispValue {
         scope["eval"] = This new(LispBuiltins eval, "eval")
         scope["car"] = This new(LispBuiltins car, "car")
         scope["cdr"] = This new(LispBuiltins cdr, "cdr")
+        scope["cons"] = This new(LispBuiltins cons, "cons")
     }
 
     toString: func -> String {
@@ -39,6 +41,7 @@ LispBuiltin: class extends LispValue {
             case LispBuiltins eval => eval(arguments, scope)
             case LispBuiltins car => car(arguments, scope)
             case LispBuiltins cdr => cdr(arguments, scope)
+            case LispBuiltins cons => cons(arguments, scope)
         }
     }
 
@@ -84,5 +87,29 @@ LispBuiltin: class extends LispValue {
         } else {
             list as LispImproperList cdr
         }
+    }
+
+    cons: func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+        if (arguments size != 2) {
+            raise(This, "Wrong number of arguments") // TODO: Proper error
+        }
+        car := arguments[0] evaluate(scope)
+        cdr := arguments[1] evaluate(scope)
+
+        // First case, (cons x nil) -> (x)
+        if (cdr class == LispProperList && cdr as LispProperList items size == 0) {
+            list := ArrayList<LispValue> new()
+            list add(car)
+            return LispList new(list)
+        }
+        // Second case, (cons foo (proper list)) -> (foo proper list)
+        if (cdr class == LispProperList) {
+            list := ArrayList<LispValue> new()
+            list add(car)
+            list addAll(cdr as LispProperList items)
+            return LispList new(list)
+        }
+        // Third case, (cons foo bar) -> (foo . bar)
+        return LispList new(car, cdr)
     }
 }
