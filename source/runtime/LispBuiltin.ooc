@@ -31,7 +31,7 @@ LispBuiltin: class extends LispValue {
         if (arguments size != 1) {
             raise(This, "Wrong number of arguments") // TODO: Specific error type
         }
-        list := arguments[0]
+        list := arguments[0] evaluate(scope)
         if (list class != LispProperList && list class != LispImproperList) {
             raise(This, "Expecting type List, got blah") // TODO: Proper error
         }
@@ -46,7 +46,7 @@ LispBuiltin: class extends LispValue {
         if (arguments size != 1) {
             raise(This, "Wrong number of arguments") // TODO: Specific error type
         }
-        list := arguments[0]
+        list := arguments[0] evaluate(scope)
         if (list class != LispProperList && list class != LispImproperList) {
             raise(This, "Expecting type List, got blah") // TODO: Proper error
         }
