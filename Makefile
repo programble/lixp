@@ -26,6 +26,7 @@ lixp: $(SOURCES) Makefile
 
 clean:
 	rm -f lixp
+	rm -rf rock_tmp
 
 libsclean: clean
 	rm -rf .libs/
