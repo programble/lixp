@@ -1,7 +1,7 @@
 Lixp
 ====
 
-Some kind of lisp in [ooc](http://ooc-lang.org/).
+Some kind of Lisp in [ooc](http://ooc-lang.org/).
 
 Dependencies
 ------------
