@@ -3,6 +3,7 @@ import ../Scope
 import [LispValue, LispList]
 
 LispBuiltins: enum {
+    quote,
     car,
     cdr
 }
@@ -25,6 +26,13 @@ LispBuiltin: class extends LispValue {
             case LispBuiltins car => car(arguments, scope)
             case LispBuiltins cdr => cdr(arguments, scope)
         }
+    }
+
+    quote: func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+        if (arguments size != 1) {
+            raise(This, "Wrong number of arguments") // TODO: Specific error type
+        }
+        arguments[0]
     }
 
     car: func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
