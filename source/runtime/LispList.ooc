@@ -55,7 +55,12 @@ LispProperList: class extends LispList {
             return this
         }
         callee := items[0] evaluate(scope)
-        args := items[1..-1]
+        args: ArrayList<LispValue>
+        if (items size == 1) {
+            args = ArrayList<LispValue> new()
+        } else {
+            args = items[1..-1]
+        }
         callee call(args, scope)
     }
 }
