@@ -1,6 +1,6 @@
 import structs/ArrayList
 import ../Scope
-import [LispValue, LispList, LispSymbol]
+import [LispValue, LispList, LispSymbol, LispNumber]
 
 LispBuiltins: enum {
     quote,
@@ -10,7 +10,8 @@ LispBuiltins: enum {
     cons,
     cond,
 
-    eq
+    eq,
+    gt
 }
 
 LispBuiltin: class extends LispValue {
@@ -31,6 +32,7 @@ LispBuiltin: class extends LispValue {
         scope["cond"] = This new(LispBuiltins cond, "cond")
 
         scope["="] = This new(LispBuiltins eq, "=")
+        scope[">"] = This new(LispBuiltins gt, ">")
     }
 
     toString: func -> String {
@@ -51,6 +53,7 @@ LispBuiltin: class extends LispValue {
             case LispBuiltins cond => cond(arguments, scope)
 
             case LispBuiltins eq => eq(arguments, scope)
+            case LispBuiltins gt => gt(arguments, scope)
         }
     }
 
@@ -152,6 +155,23 @@ LispBuiltin: class extends LispValue {
             raise(This, "Wrong number of arguments") // TODO: Proper error
         }
         if (arguments[0] evaluate(scope) equals?(arguments[1] evaluate(scope))) {
+            return LispSymbol new("t")
+        } else {
+            return LispList new()
+        }
+    }
+
+    gt: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+        if (arguments size != 2) {
+            raise(This, "Wrong number of arguments") // TODO: Proper error
+        }
+        x := arguments[0] evaluate(scope)
+        y := arguments[1] evaluate(scope)
+        if (x class != LispNumber || y class != LispNumber) {
+            raise(This, "OMG WRONG TYPES") // TODO: Error
+        }
+        // TODO: Handle floats, if we ever get them working
+        if (x as LispNumber ivalue > y as LispNumber ivalue) {
             return LispSymbol new("t")
         } else {
             return LispList new()
