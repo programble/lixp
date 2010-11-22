@@ -54,21 +54,23 @@ LispBuiltin: class extends LispValue {
         }
     }
 
-    quote: func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+    // Builtins start here
+
+    quote: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
         if (arguments size != 1) {
             raise(This, "Wrong number of arguments") // TODO: Specific error type
         }
         arguments[0]
     }
 
-    eval: func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+    eval: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
         if (arguments size != 1) {
             raise(This, "Wrong number of arguments") // TODO: Specific error type
         }
         arguments[0] evaluate(scope) evaluate(scope)
     }
 
-    car: func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+    car: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
         if (arguments size != 1) {
             raise(This, "Wrong number of arguments") // TODO: Specific error type
         }
@@ -83,7 +85,7 @@ LispBuiltin: class extends LispValue {
         }
     }
 
-    cdr: func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+    cdr: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
         if (arguments size != 1) {
             raise(This, "Wrong number of arguments") // TODO: Specific error type
         }
@@ -98,7 +100,7 @@ LispBuiltin: class extends LispValue {
         }
     }
 
-    cons: func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+    cons: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
         if (arguments size != 2) {
             raise(This, "Wrong number of arguments") // TODO: Proper error
         }
@@ -122,7 +124,7 @@ LispBuiltin: class extends LispValue {
         return LispList new(car, cdr)
     }
 
-    cond: func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+    cond: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
         for (pair in arguments) {
             if (pair class != LispProperList) {
                 raise(This, "Unexpected type and i need an error system") // TODO: Error
@@ -145,7 +147,7 @@ LispBuiltin: class extends LispValue {
         return LispList new()
     }
 
-    eq: func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+    eq: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
         if (arguments size != 2) {
             raise(This, "Wrong number of arguments") // TODO: Proper error
         }
