@@ -11,7 +11,8 @@ LispBuiltins: enum {
     cond,
 
     eq,
-    gt
+    gt,
+    lt
 }
 
 LispBuiltin: class extends LispValue {
@@ -33,6 +34,7 @@ LispBuiltin: class extends LispValue {
 
         scope["="] = This new(LispBuiltins eq, "=")
         scope[">"] = This new(LispBuiltins gt, ">")
+        scope["<"] = This new(LispBuiltins lt, "<")
     }
 
     toString: func -> String {
@@ -54,6 +56,7 @@ LispBuiltin: class extends LispValue {
 
             case LispBuiltins eq => eq(arguments, scope)
             case LispBuiltins gt => gt(arguments, scope)
+            case LispBuiltins lt => lt(arguments, scope)
         }
     }
 
@@ -172,6 +175,23 @@ LispBuiltin: class extends LispValue {
         }
         // TODO: Handle floats, if we ever get them working
         if (x as LispNumber ivalue > y as LispNumber ivalue) {
+            return LispSymbol new("t")
+        } else {
+            return LispList new()
+        }
+    }
+
+    lt: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+        if (arguments size != 2) {
+            raise(This, "Wrong number of arguments") // TODO: Proper error
+        }
+        x := arguments[0] evaluate(scope)
+        y := arguments[1] evaluate(scope)
+        if (x class != LispNumber || y class != LispNumber) {
+            raise(This, "OMG WRONG TYPES") // TODO: Error
+        }
+        // TODO: Handle floats, if we ever get them working
+        if (x as LispNumber ivalue < y as LispNumber ivalue) {
             return LispSymbol new("t")
         } else {
             return LispList new()
