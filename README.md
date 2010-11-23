@@ -6,7 +6,7 @@ Some kind of Lisp in [ooc](http://ooc-lang.org/).
 Dependencies
 ------------
 
- * [rock](https://github.com/nddrylliog/rock), ooc's compiler
+ * [rock](https://github.com/nddrylliog/rock), ooc's compiler (or some other compatible ooc compiler)
 
 Building
 --------
