@@ -153,3 +153,4 @@ the `main` namespace and is not found will it officially be undefined.
 
 The scope can have a pointer to the namespace it's in! That should
 mean only one global variable, for the treemap of namespaces.
+
