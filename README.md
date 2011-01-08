@@ -1,5 +1,6 @@
 Lixp
 ====
+![](http://stillmaintained.com/programble/lixp.png)
 
 Some kind of Lisp in [ooc](http://ooc-lang.org/).
 
