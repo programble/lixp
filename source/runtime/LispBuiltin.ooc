@@ -21,14 +21,17 @@ LispBuiltins: enum {
 }
 
 LispBuiltin: class extends LispValue {
+    t: static const LispValue = LispSymbol new("t")
+    nil: static const LispValue = LispList new()
+    
     value: LispBuiltins
     str: String
 
     init: func (=value, =str)
 
     bindAll: static func (scope: Scope<LispValue>) {
-        scope["nil"] = LispList new()
-        scope["t"] = LispSymbol new("t")
+        scope["nil"] = nil
+        scope["t"] = t
         
         scope["quote"] = This new(LispBuiltins quote, "quote")
         scope["eval"] = This new(LispBuiltins eval, "eval")
@@ -159,7 +162,7 @@ LispBuiltin: class extends LispValue {
                 raise(This, "TODO: SOme error") // TODO: Error
             }
         }
-        return LispList new()
+        return nil
     }
 
     eq: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
@@ -167,9 +170,9 @@ LispBuiltin: class extends LispValue {
             raise(This, "Wrong number of arguments") // TODO: Proper error
         }
         if (arguments[0] evaluate(scope) equals?(arguments[1] evaluate(scope))) {
-            return LispSymbol new("t")
+            return t
         } else {
-            return LispList new()
+            return nil
         }
     }
 
@@ -184,9 +187,9 @@ LispBuiltin: class extends LispValue {
         }
         // TODO: Handle floats, if we ever get them working
         if (x as LispNumber ivalue > y as LispNumber ivalue) {
-            return LispSymbol new("t")
+            return t
         } else {
-            return LispList new()
+            return nil
         }
     }
 
@@ -201,9 +204,9 @@ LispBuiltin: class extends LispValue {
         }
         // TODO: Handle floats, if we ever get them working
         if (x as LispNumber ivalue < y as LispNumber ivalue) {
-            return LispSymbol new("t")
+            return t
         } else {
-            return LispList new()
+            return nil
         }
     }
 
