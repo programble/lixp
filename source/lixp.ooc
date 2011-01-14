@@ -1,5 +1,6 @@
 import structs/ArrayList
 
+import Version
 import runtime/[LispValue, LispBuiltin]
 import Scope
 import LispReader
@@ -22,7 +23,7 @@ readLine: func -> String {
 }
 
 main: func {
-    "Lixp (ooc branch)" println()
+    "Lixp (%s)" printfln(Version toString())
     scope := Scope<LispValue> new()
     LispBuiltin bindAll(scope)
     while (true) {
