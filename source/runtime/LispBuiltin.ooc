@@ -12,7 +12,12 @@ LispBuiltins: enum {
 
     eq,
     gt,
-    lt
+    lt,
+
+    add,
+    sub,
+    mul,
+    div
 }
 
 LispBuiltin: class extends LispValue {
@@ -35,6 +40,8 @@ LispBuiltin: class extends LispValue {
         scope["="] = This new(LispBuiltins eq, "=")
         scope[">"] = This new(LispBuiltins gt, ">")
         scope["<"] = This new(LispBuiltins lt, "<")
+
+        scope["+"] = This new(LispBuiltins add, "+")
     }
 
     toString: func -> String {
@@ -57,6 +64,8 @@ LispBuiltin: class extends LispValue {
             case LispBuiltins eq => eq(arguments, scope)
             case LispBuiltins gt => gt(arguments, scope)
             case LispBuiltins lt => lt(arguments, scope)
+
+            case LispBuiltins add => add(arguments, scope)
         }
     }
 
@@ -196,5 +205,18 @@ LispBuiltin: class extends LispValue {
         } else {
             return LispList new()
         }
+    }
+
+    add: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+        acc := 0
+        for (i in arguments) {
+            i = i evaluate(scope)
+            if (i class != LispNumber) {
+                raise(This, "WTF YOU CAN'T ADD THAT DUDE") // TODO: Proper error, lol
+            }
+            // TODO: Handle floats, if they ever work, apparently
+            acc += i as LispNumber ivalue
+        }
+        LispNumber new(acc)
     }
 }
