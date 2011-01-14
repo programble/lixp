@@ -23,7 +23,7 @@ readLine: func -> String {
 }
 
 main: func {
-    "Lixp (%s)" printfln(Version toString())
+    "Lixp %s" printfln(Version toString())
     scope := Scope<LispValue> new()
     LispBuiltin bindAll(scope)
     while (true) {
