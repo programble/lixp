@@ -8,12 +8,12 @@ ArityException: class extends Exception {
     }
 }
 
-TypeException: class extends Exception {
+ArgumentTypeException: class extends Exception {
     init: func (=origin, name: String, expected: Class, got: Class) {
         init(name, expected, got)
     }
 
     init: func ~noOrigin (name: String, expected: Class, got: Class) {
-        message = "%s is of wrong type: expected %s, got %s" format(name, expected name, got name)
+        message = "Argument to %s is of wrong type: expected %s, got %s" format(name, expected name, got name)
     }
 }
