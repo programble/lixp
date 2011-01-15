@@ -67,8 +67,17 @@ LispReader: class {
         
         dispatch := reader peek()
         
-        if ((dispatch >= '0' && dispatch <= '9') || dispatch == '-') {
+        if (dispatch >= '0' && dispatch <= '9') {
             readNumber()
+        } else if (dispatch == '-' && hasNext?()) {
+            reader read() // Skip -
+            next := reader read()
+            reader rewind(2)
+            if (next >= '0' && next <= '9') {
+                readNumber()
+            } else {
+                readSymbol()
+            }
         } else match (dispatch) {
             case ')' => raise(This, "Mismatched parenthesis") // TODO: Some specific error type?
             case '(' => readList()
