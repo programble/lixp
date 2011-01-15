@@ -46,6 +46,7 @@ LispBuiltin: class extends LispValue {
 
         scope["+"] = This new(LispBuiltins add, "+")
         scope["-"] = This new(LispBuiltins sub, "-")
+        scope["*"] = This new(LispBuiltins mul, "*")
     }
 
     toString: func -> String {
@@ -57,21 +58,23 @@ LispBuiltin: class extends LispValue {
     }
 
     call: func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
-        match (value) {
-            case LispBuiltins quote => quote(arguments, scope)
-            case LispBuiltins eval => eval(arguments, scope)
-            case LispBuiltins car => car(arguments, scope)
-            case LispBuiltins cdr => cdr(arguments, scope)
-            case LispBuiltins cons => cons(arguments, scope)
-            case LispBuiltins cond => cond(arguments, scope)
+        f := match (value) {
+            case LispBuiltins quote => quote 
+            case LispBuiltins eval => eval 
+            case LispBuiltins car => car 
+            case LispBuiltins cdr => cdr 
+            case LispBuiltins cons => cons 
+            case LispBuiltins cond => cond 
 
-            case LispBuiltins eq => eq(arguments, scope)
-            case LispBuiltins gt => gt(arguments, scope)
-            case LispBuiltins lt => lt(arguments, scope)
+            case LispBuiltins eq => eq 
+            case LispBuiltins gt => gt 
+            case LispBuiltins lt => lt 
 
-            case LispBuiltins add => add(arguments, scope)
-            case LispBuiltins sub => sub(arguments, scope)
+            case LispBuiltins add => add 
+            case LispBuiltins sub => sub 
+            case LispBuiltins mul => mul
         }
+        f(arguments, scope)
     }
 
     // Builtins start here
@@ -250,5 +253,18 @@ LispBuiltin: class extends LispValue {
             }
             LispNumber new(acc)
         }
+    }
+
+    mul: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+        acc := 1
+        for (i in arguments) {
+            i = i evaluate(scope)
+            if (i class != LispNumber) {
+                raise(This, "derp") // TODO: dhair3wq
+            }
+            // TODO: Floats
+            acc *= i as LispNumber ivalue
+        }
+        LispNumber new(acc)
     }
 }
