@@ -126,7 +126,7 @@ LispBuiltin: class extends LispValue {
         cdr := arguments[1] evaluate(scope)
 
         // First case, (cons x nil) -> (x)
-        if (cdr class == LispProperList && cdr as LispProperList items size == 0) {
+        if (cdr class == LispProperList && cdr as LispProperList nil?()) {
             list := ArrayList<LispValue> new()
             list add(car)
             return LispList new(list)

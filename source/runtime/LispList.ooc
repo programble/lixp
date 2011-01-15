@@ -63,6 +63,10 @@ LispProperList: class extends LispList {
         }
         callee call(args, scope)
     }
+
+    nil?: func -> Bool {
+        items size == 0
+    }
 }
 
 LispImproperList: class extends LispList {
