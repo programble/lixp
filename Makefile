@@ -17,7 +17,7 @@
 
 ROCK:=rock
 
-ROCKFLAGS=-g -v
+ROCKFLAGS=-g +-rdynamic -v
 
 SOURCES:=$(wildcard source/*) $(wildcard source/*/*)
 
