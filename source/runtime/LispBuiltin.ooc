@@ -45,6 +45,7 @@ LispBuiltin: class extends LispValue {
         scope["<"] = This new(LispBuiltins lt, "<")
 
         scope["+"] = This new(LispBuiltins add, "+")
+        scope["-"] = This new(LispBuiltins sub, "-")
     }
 
     toString: func -> String {
@@ -69,6 +70,7 @@ LispBuiltin: class extends LispValue {
             case LispBuiltins lt => lt(arguments, scope)
 
             case LispBuiltins add => add(arguments, scope)
+            case LispBuiltins sub => sub(arguments, scope)
         }
     }
 
@@ -221,5 +223,32 @@ LispBuiltin: class extends LispValue {
             acc += i as LispNumber ivalue
         }
         LispNumber new(acc)
+    }
+
+    sub: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+        if (arguments size == 0) {
+            LispNumber new(0)
+        } else if (arguments size == 1) {
+            x := arguments[0] evaluate(scope)
+            if (x class != LispNumber) {
+                raise(This, "derp") // TODO: k srsly
+            }
+            LispNumber new(x as LispNumber ivalue * -1)
+        } else {
+            first := arguments[0] evaluate(scope)
+            if (first class != LispNumber) {
+                raise(This, "derp") // TODO: wdakjhgsgh
+            }
+            // TODO: Float support
+            acc := first as LispNumber ivalue
+            for (i in arguments[1..-1]) {
+                i = i evaluate(scope)
+                if (i class != LispNumber) {
+                    raise(This, "derp") // TODO: dhjsghiuhr
+                }
+                acc -= i as LispNumber ivalue
+            }
+            LispNumber new(acc)
+        }
     }
 }
