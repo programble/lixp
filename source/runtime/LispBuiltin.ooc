@@ -1,6 +1,7 @@
 import structs/ArrayList
 import ../Scope
 import [LispValue, LispList, LispSymbol, LispNumber]
+import exceptions
 
 LispBuiltins: enum {
     quote,
@@ -25,9 +26,9 @@ LispBuiltin: class extends LispValue {
     nil: static const LispValue = LispList new()
     
     value: LispBuiltins
-    str: String
+    name: String
 
-    init: func (=value, =str)
+    init: func (=value, =name)
 
     bindAll: static func (scope: Scope<LispValue>) {
         scope["nil"] = nil
@@ -50,7 +51,7 @@ LispBuiltin: class extends LispValue {
     }
 
     toString: func -> String {
-        "%s" format(str)
+        "%s" format(name)
     }
 
     equals?: func (other: LispValue) -> Bool {
@@ -81,25 +82,25 @@ LispBuiltin: class extends LispValue {
 
     quote: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
         if (arguments size != 1) {
-            raise(This, "Wrong number of arguments") // TODO: Specific error type
+            ArityException new("quote", 1, arguments size) throw()
         }
         arguments[0]
     }
 
     eval: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
         if (arguments size != 1) {
-            raise(This, "Wrong number of arguments") // TODO: Specific error type
+            ArityException new("eval", 1, arguments size) throw()
         }
         arguments[0] evaluate(scope) evaluate(scope)
     }
 
     car: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
         if (arguments size != 1) {
-            raise(This, "Wrong number of arguments") // TODO: Specific error type
+            ArityException new("car", 1, arguments size) throw()
         }
         list := arguments[0] evaluate(scope)
         if (list class != LispProperList && list class != LispImproperList) {
-            raise(This, "Expecting type List, got blah") // TODO: Proper error
+            ArgumentTypeException new("car", LispList, list class) throw()
         }
         if (list class == LispProperList) {
             list as LispProperList items[0]
@@ -110,11 +111,11 @@ LispBuiltin: class extends LispValue {
 
     cdr: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
         if (arguments size != 1) {
-            raise(This, "Wrong number of arguments") // TODO: Specific error type
+            ArityException new("cdr", 1, arguments size) throw()
         }
         list := arguments[0] evaluate(scope)
         if (list class != LispProperList && list class != LispImproperList) {
-            raise(This, "Expecting type List, got blah") // TODO: Proper error
+            ArgumentTypeException new("cdr", LispList, list class) throw()
         }
         if (list class == LispProperList) {
             LispList new(list as LispProperList items[1..-1])
@@ -125,7 +126,7 @@ LispBuiltin: class extends LispValue {
 
     cons: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
         if (arguments size != 2) {
-            raise(This, "Wrong number of arguments") // TODO: Proper error
+            ArityException new("cons", 2, arguments size) throw()
         }
         car := arguments[0] evaluate(scope)
         cdr := arguments[1] evaluate(scope)
@@ -150,7 +151,7 @@ LispBuiltin: class extends LispValue {
     cond: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
         for (pair in arguments) {
             if (pair class != LispProperList) {
-                raise(This, "Unexpected type and i need an error system") // TODO: Error
+                ArgumentTypeException new("cond", LispProperList, pair class) throw()
             }
             // First case, (foo) -> foo
             if (pair as LispProperList items size == 1) {
@@ -164,7 +165,7 @@ LispBuiltin: class extends LispValue {
             }
             // Third case, too many items
             if (pair as LispProperList items size > 2) {
-                raise(This, "TODO: SOme error") // TODO: Error
+                ArityException new("cond", 2, pair as LispProperList items size) throw() // TODO: Possibly a better error?
             }
         }
         return nil
@@ -172,7 +173,7 @@ LispBuiltin: class extends LispValue {
 
     eq: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
         if (arguments size != 2) {
-            raise(This, "Wrong number of arguments") // TODO: Proper error
+            ArityException new("=", 2, arguments size) throw()
         }
         if (arguments[0] evaluate(scope) equals?(arguments[1] evaluate(scope))) {
             return t
@@ -183,12 +184,12 @@ LispBuiltin: class extends LispValue {
 
     gt: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
         if (arguments size != 2) {
-            raise(This, "Wrong number of arguments") // TODO: Proper error
+            ArityException new(">", 2, arguments size) throw()
         }
         x := arguments[0] evaluate(scope)
         y := arguments[1] evaluate(scope)
         if (x class != LispNumber || y class != LispNumber) {
-            raise(This, "OMG WRONG TYPES") // TODO: Error
+            ArgumentTypeException new(">", LispNumber, (x class != LispNumber) ? (x class) : (y class)) throw()
         }
         // TODO: Handle floats, if we ever get them working
         if (x as LispNumber ivalue > y as LispNumber ivalue) {
@@ -200,12 +201,12 @@ LispBuiltin: class extends LispValue {
 
     lt: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
         if (arguments size != 2) {
-            raise(This, "Wrong number of arguments") // TODO: Proper error
+            ArityException new("<", 2, arguments size) throw()
         }
         x := arguments[0] evaluate(scope)
         y := arguments[1] evaluate(scope)
         if (x class != LispNumber || y class != LispNumber) {
-            raise(This, "OMG WRONG TYPES") // TODO: Error
+            ArgumentTypeException new("<", LispNumber, (x class != LispNumber) ? (x class) : (y class)) throw()
         }
         // TODO: Handle floats, if we ever get them working
         if (x as LispNumber ivalue < y as LispNumber ivalue) {
@@ -220,7 +221,7 @@ LispBuiltin: class extends LispValue {
         for (i in arguments) {
             i = i evaluate(scope)
             if (i class != LispNumber) {
-                raise(This, "WTF YOU CAN'T ADD THAT DUDE") // TODO: Proper error, lol
+                ArgumentTypeException new("+", LispNumber, i class) throw()
             }
             // TODO: Handle floats, if they ever work, apparently
             acc += i as LispNumber ivalue
@@ -234,20 +235,20 @@ LispBuiltin: class extends LispValue {
         } else if (arguments size == 1) {
             x := arguments[0] evaluate(scope)
             if (x class != LispNumber) {
-                raise(This, "derp") // TODO: k srsly
+                ArgumentTypeException new("-", LispNumber, x class) throw()
             }
             LispNumber new(x as LispNumber ivalue * -1)
         } else {
             first := arguments[0] evaluate(scope)
             if (first class != LispNumber) {
-                raise(This, "derp") // TODO: wdakjhgsgh
+                ArgumentTypeException new("-", LispNumber, first class) throw()
             }
             // TODO: Float support
             acc := first as LispNumber ivalue
             for (i in arguments[1..-1]) {
                 i = i evaluate(scope)
                 if (i class != LispNumber) {
-                    raise(This, "derp") // TODO: dhjsghiuhr
+                    ArgumentTypeException new("-", LispNumber, i class) throw()
                 }
                 acc -= i as LispNumber ivalue
             }
@@ -260,7 +261,7 @@ LispBuiltin: class extends LispValue {
         for (i in arguments) {
             i = i evaluate(scope)
             if (i class != LispNumber) {
-                raise(This, "derp") // TODO: dhair3wq
+                ArgumentTypeException new("*", LispNumber, i class) throw()
             }
             // TODO: Floats
             acc *= i as LispNumber ivalue
