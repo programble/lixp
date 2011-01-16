@@ -32,14 +32,14 @@ main: func {
         if (input == null) {
             break
         }
-        reader := LispReader new(input)
-        exprs := reader readAll()
-        for (expr in exprs) {
-            try {
+        try {
+            reader := LispReader new(input)
+            exprs := reader readAll()
+            for (expr in exprs) {
                 expr evaluate(scope) toString() println()
-            } catch (e: Exception) {
-                e print()
             }
+        } catch (e: Exception) {
+            e print()
         }
     }
 }
