@@ -44,6 +44,10 @@ extend Reader {
     }
 }
 
+SyntaxException: class extends Exception {
+    init: func (=message)
+}
+
 LispReader: class {
     reader: Reader
 
@@ -79,7 +83,7 @@ LispReader: class {
                 readSymbol()
             }
         } else match (dispatch) {
-            case ')' => raise(This, "Mismatched parenthesis") // TODO: Some specific error type?
+            case ')' => SyntaxException new("Mismatched parentheses") throw()
             case '(' => readList()
             case '\\' => readCharacter()
             case '"' => readString()
