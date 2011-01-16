@@ -279,6 +279,9 @@ LispBuiltin: class extends LispValue {
             if (x class != LispNumber) {
                 ArgumentTypeException new("/", LispNumber, x class) throw()
             }
+            if (x as LispNumber ivalue == 0) {
+                ZeroDivisionException new() throw()
+            }
             // TODO: This should be a float
             LispNumber new(1 / x as LispNumber ivalue)
         } else {
@@ -292,6 +295,9 @@ LispBuiltin: class extends LispValue {
                 i = i evaluate(scope)
                 if (i class != LispNumber) {
                     ArgumentTypeException new("/", LispNumber, i class) throw()
+                }
+                if (i as LispNumber ivalue == 0) {
+                    ZeroDivisionException new() throw()
                 }
                 acc /= i as LispNumber ivalue
             }

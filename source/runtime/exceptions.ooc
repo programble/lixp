@@ -15,3 +15,9 @@ NotCallableException: class extends Exception {
         message = "Type %s is not callable" format(type name)
     }
 }
+
+ZeroDivisionException: class extends Exception {
+    init: func {
+        message = "Cannot divide by zero"
+    }
+}
