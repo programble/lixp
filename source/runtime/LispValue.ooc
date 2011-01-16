@@ -1,6 +1,7 @@
 import structs/ArrayList
 
 import ../Scope
+import exceptions
 
 LispValue: abstract class {
 
@@ -13,8 +14,7 @@ LispValue: abstract class {
     }
 
     call: func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
-        // TODO: We should eventually implement our own error system
-        raise(This, "Cannot call")
+        NotCallableException new(this class) throw()
     }
 }
 
