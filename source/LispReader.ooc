@@ -97,8 +97,7 @@ LispReader: class {
             case '\'' => readQuote()
             case ';' =>
                 reader skipLine()
-                // TODO: Fix this. It will OOB error if the comment is at the end of the input
-                read()
+                null
             case => readSymbol()
         }
     }
@@ -106,7 +105,10 @@ LispReader: class {
     readAll: func -> ArrayList<LispValue> {
         all := ArrayList<LispValue> new()
         while (hasNext?()) {
-            all add(read())
+            x := read()
+            if (x != null) {
+                all add(x)
+            }
         }
         return all
     }
