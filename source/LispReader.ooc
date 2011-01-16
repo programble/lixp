@@ -48,6 +48,12 @@ SyntaxException: class extends Exception {
     init: func (=message)
 }
 
+EOFException: class extends SyntaxException {
+    init: func (what: Class) {
+        message = "Unexpected EOF while reading a %s" format(what name)
+    }
+}
+
 LispReader: class {
     reader: Reader
 
@@ -111,7 +117,7 @@ LispReader: class {
 
         skipWhitespace()
         if (!hasNext?()) {
-            raise(This, "Unexpected EOF")
+            EOFException new(LispList) throw()
         }
 
         // Empty list (nil)
@@ -132,10 +138,10 @@ LispReader: class {
             skipWhitespace()
             // EOF at end of list with no )
             if (!reader hasNext?()) {
-                raise(This, "Unexpected EOF while reading list")
+                EOFException new(LispImproperList) throw()
             }
             if (reader peek() != ')') {
-                raise(This, "Invalid improper list")
+                SyntaxException new("Invalid improper list") throw()
             }
             // Skip )
             reader read()
@@ -149,7 +155,7 @@ LispReader: class {
             skipWhitespace()
             // EOF in middle of list
             if (!reader hasNext?()) {
-                raise(This, "Unexpected EOF while reading list")
+                EOFException new(LispProperList) throw()
             }
             if (reader peek() == ')') {
                 reader read()
@@ -185,7 +191,7 @@ LispReader: class {
             if (valid) {
                 return LispNumber new(i)
             } else {
-                raise(This, "Invalid int literal")
+                SyntaxException new("Invalid number literal") throw()
             }
         }
     }
@@ -195,7 +201,7 @@ LispReader: class {
         reader read()
         reader read() // No idea why this second read is required :\  
         if (!reader hasNext?()) {
-            raise(This, "Unexpected EOF while reading character literal")
+            EOFException new(LispCharacter) throw()
         }
         return LispCharacter new(reader read())
     }
@@ -204,14 +210,14 @@ LispReader: class {
         // Skip over opening "
         reader read()
         if (!reader hasNext?()) {
-            raise(This, "Unexpected EOF while reading string literal")
+            EOFException new(LispString) throw()
         }
         str := reader readUntil('"')
         // Verify we actually had a closing "
         // If we didn't, it means EOF was hit first, right?
         reader rewind(1)
         if (reader read() != '"') {
-            raise(This, "Unexpected EOF while reading string literal")
+            EOFException new(LispString) throw()
         }
         return LispString new(EscapeSequence unescape(str))
     }
