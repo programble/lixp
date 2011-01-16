@@ -35,7 +35,11 @@ main: func {
         reader := LispReader new(input)
         exprs := reader readAll()
         for (expr in exprs) {
-            expr evaluate(scope) toString() println()
+            try {
+                expr evaluate(scope) toString() println()
+            } catch (e: Exception) {
+                e print()
+            }
         }
     }
 }
