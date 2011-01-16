@@ -48,6 +48,7 @@ LispBuiltin: class extends LispValue {
         scope["+"] = This new(LispBuiltins add, "+")
         scope["-"] = This new(LispBuiltins sub, "-")
         scope["*"] = This new(LispBuiltins mul, "*")
+        scope["/"] = This new(LispBuiltins div, "/")
     }
 
     toString: func -> String {
@@ -74,6 +75,7 @@ LispBuiltin: class extends LispValue {
             case LispBuiltins add => add 
             case LispBuiltins sub => sub 
             case LispBuiltins mul => mul
+            case LispBuiltins div => div
         }
         f(arguments, scope)
     }
@@ -267,5 +269,33 @@ LispBuiltin: class extends LispValue {
             acc *= i as LispNumber ivalue
         }
         LispNumber new(acc)
+    }
+
+    div: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+        if (arguments size == 0) {
+            LispNumber new(1)
+        } else if (arguments size == 1) {
+            x := arguments[0] evaluate(scope)
+            if (x class != LispNumber) {
+                ArgumentTypeException new("/", LispNumber, x class) throw()
+            }
+            // TODO: This should be a float
+            LispNumber new(1 / x as LispNumber ivalue)
+        } else {
+            first := arguments[0] evaluate(scope)
+            if (first class != LispNumber) {
+                ArgumentTypeException new("/", LispNumber, first class) throw()
+            }
+            // TODO: Float support
+            acc := first as LispNumber ivalue
+            for (i in arguments[1..-1]) {
+                i = i evaluate(scope)
+                if (i class != LispNumber) {
+                    ArgumentTypeException new("/", LispNumber, i class) throw()
+                }
+                acc /= i as LispNumber ivalue
+            }
+            LispNumber new(acc)
+        }
     }
 }
