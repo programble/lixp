@@ -182,10 +182,11 @@ LispReader: class {
                 SyntaxException new("Invalid float literal") throw()
             }
         } else {
-            // More of that awesome C-esque sscanf stuff!
+            // The same hack again to tell if there's trailing garbage
             i: Int
-            valid: Bool = sscanf(str, "%i", i&)
-            if (valid) {
+            c: Char
+            valid: Int = sscanf(str, "%i%c", i&, c&)
+            if (valid == 1) {
                 return LispNumber new(i)
             } else {
                 SyntaxException new("Invalid number literal") throw()
