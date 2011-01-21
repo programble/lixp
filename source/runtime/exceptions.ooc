@@ -27,3 +27,9 @@ AlreadyDefinedException: class extends Exception {
         message = "Symbol %s is already defined" format(name)
     }
 }
+
+UndefinedException: class extends Exception {
+    init: func (name: String) {
+        message = "Symbol %s is not defined" format(name)
+    }
+}
