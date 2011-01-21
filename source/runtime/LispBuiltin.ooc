@@ -315,6 +315,10 @@ LispBuiltin: class extends LispValue {
     }
 
     def: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+        // Climb up the scope tree to find global scope
+        while (scope parent) {
+            scope = scope parent
+        }
         if (arguments size != 2) {
             ArityException new("def", 2, arguments size) throw()
         }
@@ -331,6 +335,10 @@ LispBuiltin: class extends LispValue {
     }
 
     undef: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+        // Climb up the scope tree to find global scope
+        while (scope parent) {
+            scope = scope parent
+        }
         if (arguments size != 1) {
             ArityException new("undef!", 1, arguments size) throw()
         }
