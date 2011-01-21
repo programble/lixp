@@ -21,3 +21,9 @@ ZeroDivisionException: class extends Exception {
         message = "Cannot divide by zero"
     }
 }
+
+AlreadyDefinedException: class extends Exception {
+    init: func (name: String) {
+        message = "Symbol %s is already defined" format(name)
+    }
+}

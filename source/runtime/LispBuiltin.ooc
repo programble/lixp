@@ -18,7 +18,9 @@ LispBuiltins: enum {
     add,
     sub,
     mul,
-    div
+    div,
+
+    def
 }
 
 LispBuiltin: class extends LispValue {
@@ -49,6 +51,8 @@ LispBuiltin: class extends LispValue {
         scope["-"] = This new(LispBuiltins sub, "-")
         scope["*"] = This new(LispBuiltins mul, "*")
         scope["/"] = This new(LispBuiltins div, "/")
+
+        scope["def"] = This new(LispBuiltins def, "def")
     }
 
     toString: func -> String {
@@ -76,6 +80,8 @@ LispBuiltin: class extends LispValue {
             case LispBuiltins sub => sub 
             case LispBuiltins mul => mul
             case LispBuiltins div => div
+
+            case LispBuiltins def => def
         }
         f(arguments, scope)
     }
@@ -303,5 +309,21 @@ LispBuiltin: class extends LispValue {
             }
             LispNumber new(acc)
         }
+    }
+
+    def: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+        if (arguments size != 2) {
+            ArityException new("def", 2, arguments size) throw()
+        }
+        if (arguments[0] class != LispSymbol) {
+            ArgumentTypeException new("def", LispSymbol, arguments[0] class) throw()
+        }
+        symbol := arguments[0] as LispSymbol value
+        value := arguments[1] evaluate(scope)
+        if (scope contains?(symbol)) {
+            AlreadyDefinedException new(symbol) throw()
+        }
+        scope[symbol] = value
+        arguments[0]
     }
 }
