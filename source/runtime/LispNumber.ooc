@@ -15,7 +15,7 @@ LispNumber: class extends LispValue {
 
     toString: func -> String {
         if (floating) {
-            fvalue toString()
+            "%.0f" format(fvalue)
         } else {
             ivalue toString()
         }
