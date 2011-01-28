@@ -21,7 +21,9 @@ LispBuiltins: enum {
     div,
 
     def,
-    undef
+    undef,
+    set,
+    unset
 }
 
 LispBuiltin: class extends LispValue {
@@ -51,10 +53,15 @@ LispBuiltin: class extends LispValue {
         scope["+"] = This new(LispBuiltins add, "+")
         scope["-"] = This new(LispBuiltins sub, "-")
         scope["*"] = This new(LispBuiltins mul, "*")
+        //scope["×"] = scope["*"]
+        //scope["·"] = scope["*"]
         scope["/"] = This new(LispBuiltins div, "/")
+        //scope["÷"] = scope["/"]
 
         scope["def"] = This new(LispBuiltins def, "def")
         scope["undef!"] = This new(LispBuiltins undef, "undef!")
+        scope["set!"] = This new(LispBuiltins set, "set!")
+        scope["unset!"] = This new(LispBuiltins unset, "unset!")
     }
 
     toString: func -> String {
@@ -85,6 +92,8 @@ LispBuiltin: class extends LispValue {
 
             case LispBuiltins def => def
             case LispBuiltins undef => undef
+            case LispBuiltins set => set
+            case LispBuiltins unset => unset
         }
         f(arguments, scope)
     }
@@ -344,6 +353,39 @@ LispBuiltin: class extends LispValue {
         }
         if (arguments[0] class != LispSymbol) {
             ArgumentTypeException new("undef!", LispSymbol, arguments[0] class) throw()
+        }
+        symbol := arguments[0] as LispSymbol value
+        if (!scope contains?(symbol)) {
+            UndefinedException new(symbol) throw()
+        }
+        value := scope[symbol]
+        scope remove(symbol)
+        value
+    }
+
+    set: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+        if (arguments size != 2) {
+            ArityException new("set!", 2, arguments size) throw()
+        }
+        if (arguments[0] class != LispSymbol) {
+            ArgumentTypeException new("set!", LispSymbol, arguments[0] class) throw()
+        }
+        symbol := arguments[0] as LispSymbol value
+        value := arguments[1] evaluate(scope)
+        if (!scope contains?(symbol)) {
+            UndefinedException new(symbol) throw()
+        }
+        old := scope[symbol]
+        scope[symbol] = value
+        old
+    }
+
+    unset: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+        if (arguments size != 1) {
+            ArityException new("unset!", 1, arguments size) throw()
+        }
+        if (arguments[0] class != LispSymbol) {
+            ArgumentTypeException new("unset!", LispSymbol, arguments[0] class) throw()
         }
         symbol := arguments[0] as LispSymbol value
         if (!scope contains?(symbol)) {
