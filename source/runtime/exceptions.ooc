@@ -1,6 +1,10 @@
 ArityException: class extends Exception {
-    init: func (name: String, expected: Int, got: Int) {
+    init: func ~exact (name: String, expected: Int, got: Int) {
         message = "Wrong number of arguments to %s: expected %d, got %d" format(name, expected, got)
+    }
+
+    init: func ~range (name: String, min, max, got: Int) {
+        message = "Wrong number of arguments to %s: expected between %d and %d, got %d" format(name, min, max, got)
     }
 }
 
