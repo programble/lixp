@@ -1,6 +1,6 @@
 import structs/ArrayList
 import ../Scope
-import [LispValue, LispList, LispSymbol, LispNumber]
+import [LispValue, LispList, LispSymbol, LispNumber, LispKeyword, LispCharacter, LispString]
 import exceptions
 
 LispBuiltins: enum {
@@ -23,7 +23,14 @@ LispBuiltins: enum {
     def,
     undef,
     set,
-    unset
+    unset,
+
+    symbolp,
+    keywordp,
+    numberp,
+    characterp,
+    stringp,
+    listp
 }
 
 LispBuiltin: class extends LispValue {
@@ -33,35 +40,41 @@ LispBuiltin: class extends LispValue {
     value: LispBuiltins
     name: String
 
-    init: func (=value, =name)
+    init: func (=value, =name, scope: Scope<LispValue>) {
+        scope[name] = this
+    }
 
     bindAll: static func (scope: Scope<LispValue>) {
         scope["nil"] = nil
         scope["t"] = t
         
-        scope["quote"] = This new(LispBuiltins quote, "quote")
-        scope["eval"] = This new(LispBuiltins eval, "eval")
-        scope["car"] = This new(LispBuiltins car, "car")
-        scope["cdr"] = This new(LispBuiltins cdr, "cdr")
-        scope["cons"] = This new(LispBuiltins cons, "cons")
-        scope["cond"] = This new(LispBuiltins cond, "cond")
+        This new(LispBuiltins quote, "quote", scope)
+        This new(LispBuiltins eval, "eval", scope)
+        This new(LispBuiltins car, "car", scope)
+        This new(LispBuiltins cdr, "cdr", scope)
+        This new(LispBuiltins cons, "cons", scope)
+        This new(LispBuiltins cond, "cond", scope)
 
-        scope["="] = This new(LispBuiltins eq, "=")
-        scope[">"] = This new(LispBuiltins gt, ">")
-        scope["<"] = This new(LispBuiltins lt, "<")
+        This new(LispBuiltins eq, "=", scope)
+        This new(LispBuiltins gt, ">", scope)
+        This new(LispBuiltins lt, "<", scope)
 
-        scope["+"] = This new(LispBuiltins add, "+")
-        scope["-"] = This new(LispBuiltins sub, "-")
-        scope["*"] = This new(LispBuiltins mul, "*")
-        //scope["×"] = scope["*"]
-        //scope["·"] = scope["*"]
-        scope["/"] = This new(LispBuiltins div, "/")
-        //scope["÷"] = scope["/"]
+        This new(LispBuiltins add, "+", scope)
+        This new(LispBuiltins sub, "-", scope)
+        This new(LispBuiltins mul, "*", scope)
+        This new(LispBuiltins div, "/", scope)
 
-        scope["def"] = This new(LispBuiltins def, "def")
-        scope["undef!"] = This new(LispBuiltins undef, "undef!")
-        scope["set!"] = This new(LispBuiltins set, "set!")
-        scope["unset!"] = This new(LispBuiltins unset, "unset!")
+        This new(LispBuiltins def, "def", scope)
+        This new(LispBuiltins undef, "undef!", scope)
+        This new(LispBuiltins set, "set!", scope)
+        This new(LispBuiltins unset, "unset!", scope)
+
+        This new(LispBuiltins symbolp, "symbol?", scope)
+        This new(LispBuiltins keywordp, "keyword?", scope)
+        This new(LispBuiltins numberp, "number?", scope)
+        This new(LispBuiltins characterp, "character?", scope)
+        This new(LispBuiltins stringp, "string?", scope)
+        This new(LispBuiltins listp, "list?", scope)
     }
 
     toString: func -> String {
@@ -94,6 +107,13 @@ LispBuiltin: class extends LispValue {
             case LispBuiltins undef => undef
             case LispBuiltins set => set
             case LispBuiltins unset => unset
+
+            case LispBuiltins symbolp => symbolp
+            case LispBuiltins keywordp => keywordp
+            case LispBuiltins numberp => numberp
+            case LispBuiltins characterp => characterp
+            case LispBuiltins stringp => stringp
+            case LispBuiltins listp => listp
         }
         f(arguments, scope)
     }
@@ -394,5 +414,48 @@ LispBuiltin: class extends LispValue {
         value := scope[symbol]
         scope remove(symbol)
         value
+    }
+
+    symbolp: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+        if (arguments size != 1) {
+            ArityException new("symbol?", 1, arguments size) throw()
+        }
+        return (arguments[0] evaluate(scope) class == LispSymbol) ? t : nil
+    }
+
+    keywordp: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+        if (arguments size != 1) {
+            ArityException new("keyword?", 1, arguments size) throw()
+        }
+        return (arguments[0] evaluate(scope) class == LispKeyword) ? t : nil
+    }
+
+    numberp: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+        if (arguments size != 1) {
+            ArityException new("number?", 1, arguments size) throw()
+        }
+        return (arguments[0] evaluate(scope) class == LispNumber) ? t : nil
+    }
+
+    characterp: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+        if (arguments size != 1) {
+            ArityException new("character?", 1, arguments size) throw()
+        }
+        return (arguments[0] evaluate(scope) class == LispCharacter) ? t : nil
+    }
+
+    stringp: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+        if (arguments size != 1) {
+            ArityException new("string?", 1, arguments size) throw()
+        }
+        return (arguments[0] evaluate(scope) class == LispString) ? t : nil
+    }
+
+    listp: static func (arguments: ArrayList<LispValue>, scope: Scope<LispValue>) -> LispValue {
+        if (arguments size != 1) {
+            ArityException new("list?", 1, arguments size) throw()
+        }
+        a := arguments[0] evaluate(scope)
+        return (a class == LispProperList || a class == LispImproperList) ? t : nil
     }
 }
