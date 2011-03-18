@@ -23,7 +23,12 @@ Scope: class <V> {
     }
 
     contains?: func (key: String) -> Bool {
-        map contains?(key)
+        here := map contains?(key)
+        if (!here && parent) {
+            parent contains?(key)
+        } else {
+            here
+        }
     }
 
     put: func (key: String, value: V) -> Bool {
