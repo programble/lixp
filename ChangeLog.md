@@ -4,6 +4,11 @@ Change Log
 Alpha
 -----
 
+### 0.0.3 (March 18 2010)
+
+ * Switched to ooc
+ * Stuff
+
 ### 0.0.2 (November 11 2010)
 
  * Started static linking pre-built GC packages
